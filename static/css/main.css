@@ -1,3 +1,63 @@
-body {
-    background-color: lightblue;
+body, html {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+input {
+    padding: 13px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 3px;
+}
+
+input:focus {
+    outline: none;
+}
+
+#Page-Login {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-image: url('/img/ship_gifs/ship1.gif');
+    z-index: 1;
+    background-color: rgba(50, 138, 123, .6);
+}
+
+#Page-Login::after {
+    display: block;
+    content: '';
+    background-color: rgba(50, 138, 123, .6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#Page-Login .login-container {
+    width: 600px;
+    background-color: white;
+    border-radius: 10px;
+    z-index: 2;
+    display: flex;
+    padding: 40px;
+    flex-direction: column;
+}
+
+#Page-Login #LoginForm input {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#Page-Login #LoginForm input[type=submit] {
+    background-color: #3686a3;
 }

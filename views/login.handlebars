@@ -1,30 +1,52 @@
 <div id="Page-Login">
     <div class="login-container">
-        <div class="form-failure">
-            {{#if failureReason }}
-                {{#switch failureReason}}
-                    {{#case "required"}}Login required to access admirals area. Enlist today!{{/case}}
-                    {{#case "failed"}}Invalid username/password{{/case}}
-                {{/switch}}
-            {{/if}}
+        <div class="welcome">
+            <h2>
+                {{#if signup}}
+                    Sign on up!
+                {{else}}
+                    Welcome back captain!
+                {{/if}}
+            </h2>
         </div>
+        {{#if errors.length }}
+            <ul class="form-errors">
+                {{#each errors}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        {{/if}}
+        
+        {{#if signup}}
+        <form action="/signup" method="POST" id="LoginForm">
+        {{else}}
         <form action="/login" method="POST" id="LoginForm">
+        {{/if}}
             <div class="row"><input type="text" placeholder="Name Of Admiral" name="username" /></div>
             <div class="row"><input type="password" placeholder="Password" name="password" /></div>
-            <input type="submit" value="Make" />
+            <input type="submit" value="HEAD TO THE SEAS" />
         </form>
+        {{#if signup}}
+            <p>Already a captain? <a href="/login">Login here.</a></p>
+        {{else}}
+            <p>Not a captain yet? <a href="/signup">Register on the high seas.</a></p>
+        {{/if}}
+        
     </div>
 </div>
 <script>
+
     const pageLogin = document.getElementById("Page-Login");
     const TOTAL_IMAGES = 6;
 
+    function shipURL(num) { return `/img/ship_gifs/ship${num}.gif`; }
+    function random() { return Math.floor(Math.random() * TOTAL_IMAGES) + 1; }
+    function changeImage() { pageLogin.style.backgroundImage = `url('${shipURL(random())}')` }
 
-    pageLogin.style.fontSize = '100px';
-
-    function shipURL(num) {
-        return `/img/ship_gifs/ship${num}.gif`;
-    }
+    setInterval(() => {
+        changeImage();
+    }, 3000);
+    changeImage();
 
     // Preload the images to the browser so they are ready to go
     const preload = [];
@@ -33,13 +55,5 @@
         img.src = shipURL(i);
         preload.push(img);
     }
-
-    let current = Math.floor(Math.random() * TOTAL_IMAGES) + 1;
-    setInterval(() => {
-        if (current > TOTAL_IMAGES) { current = 1 };
-        console.log(pageLogin);
-        console.log("switch image to " , shipURL(current++));
-        pageLogin.style.backgroundImage = shipURL(current++);
-    }, 3000);
 
 </script>

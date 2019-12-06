@@ -10,9 +10,11 @@ body, html {
 
 * {
     box-sizing: border-box;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     padding: 0;
     margin: 0;
+    font-weight: normal;
+
 
 }
 
@@ -78,6 +80,19 @@ input:focus {
     margin: 0px 0px 50px 0px;
     padding: 10px;
     border-radius: 10px;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+}
+
+#Page-Account #declareWarAgainstWho {
+    width: 400px;
+    min-height: 40px;
+    border: thin solid grey;
+}
+
+#Page-Account #declareWarAgainstWho:hover {
+    
 }
 
 #Page-Account #gameDataBlock {
@@ -88,7 +103,7 @@ input:focus {
 #Page-Account .gameData {
     flex-direction: column;
     width: 33%;
-    background-color: rgb(238, 238, 238);
+    /* background-color: rgb(238, 238, 238); */
     /* border: solid thin black; */
     padding: 0px 0px 0px 0px ;
     margin: 0px 50px 0px 50px;
@@ -98,17 +113,18 @@ input:focus {
 #Page-Account #gameDataContainer {
     min-height: 80px;
     width: 100%;
-    background-color: red;
+    background-color: rgb(238, 238, 238);
+    margin: 10px 0px 0px 0px;
 }
 
-.gameData .games {
+#Page-Account .gameData .games {
     flex-direction: column;
     width: 100%;
     padding: 10px 0px 0px 0px;
     /* background-color: blue; */
 }
 
-.gameData .game {
+#Page-Account .gameData .game {
     height: 80px;
     width: 100%;
     background-color: white;

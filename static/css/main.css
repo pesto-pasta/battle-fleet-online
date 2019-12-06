@@ -27,7 +27,7 @@ input:focus {
     height: 100%;
     align-items: center;
     justify-content: center;
-    background-image: url('/img/ship_gifs/ship1.gif');
+    /* background-image: url('/img/ship_gifs/ship1.gif'); */
     z-index: 1;
     background-color: rgba(50, 138, 123, .6);
 }

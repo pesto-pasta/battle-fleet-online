@@ -21,7 +21,10 @@ const customHandlebars = handleBars.create({
             }
         },
     }
+
 })
+
+app.use(express.static("static"));
 
 //configure express
 app.engine('handlebars', customHandlebars.engine);
@@ -79,10 +82,16 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', (req, res) => {
     const conflict = users.find((user) => user.username === req.body.username);
+    let error;
     if (conflict) {
-        res.render('signup', { error: "That username already exists" });
+        error = "That username already exists";
     } else if (req.body.username.length === 0 || req.body.password.length === 0) {
-        res.render('signup', { error: "Username and password are required." });
+        error = "Username and password are required.";
+    }
+    // more error conditions would go here..
+    
+    if (error) {
+        res.render('signup', { error });
     } else {
         const newUser = { username: req.body.username, password: req.body.password };
         users.push(newUser);

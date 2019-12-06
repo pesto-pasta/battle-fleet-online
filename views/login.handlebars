@@ -1,0 +1,19 @@
+<h1>
+    
+</h1>
+
+<div>
+    {{#if failureReason }}
+        {{#switch failureReason}}
+            {{#case "required"}}Login required to access admirals area. Enlist today!<br>{{/case}}
+            {{#case "failed"}}Invalid username/password<br>{{/case}}
+        {{/switch}}
+    {{/if}}
+
+    <form action="/login" method="POST">
+        <input type="text" placeholder="Name Of Admiral" name="username"/>
+        <input type="password" placeholder="Password" name="password"/>
+        <input type="submit" value="Make"/>
+    
+    </form>
+</div>

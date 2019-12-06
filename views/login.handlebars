@@ -1,19 +1,41 @@
-<h1>
-    
-</h1>
-
-<div>
-    {{#if failureReason }}
-        {{#switch failureReason}}
-            {{#case "required"}}Login required to access admirals area. Enlist today!<br>{{/case}}
-            {{#case "failed"}}Invalid username/password<br>{{/case}}
-        {{/switch}}
-    {{/if}}
-
-    <form action="/login" method="POST">
-        <input type="text" placeholder="Name Of Admiral" name="username"/>
-        <input type="password" placeholder="Password" name="password"/>
-        <input type="submit" value="Assume your battle station"/>
-    
-    </form>
+<div id="Page-Login">
+    <div class="login-container">
+        <div class="form-failure">
+            {{#if failureReason }}
+                {{#switch failureReason}}
+                    {{#case "required"}}Login required to access admirals area. Enlist today!<br>{{/case}}
+                    {{#case "failed"}}Invalid username/password<br>{{/case}}
+                {{/switch}}
+            {{/if}}
+        </div>
+        <form action="/login" method="POST" id="LoginForm">
+            <div class="row"><input type="text" placeholder="Name Of Admiral" name="username" /></div>
+            <div class="row"><input type="password" placeholder="Password" name="password" /></div>
+            <input type="submit" value="Make" />
+        </form>
+    </div>
 </div>
+<script>
+    const pageLogin = document.getElementById("Page-Login");
+    const TOTAL_IMAGES = 6;
+
+    function shipURL(num) {
+        return `/img/ship_gifs/ship${num}.gif`;
+    }
+
+    // Preload the images to the browser so they are ready to go
+    const preload = [];
+    for (let i = 1; i <= TOTAL_IMAGES; i++) {
+        const img = new Image();
+        img.src = shipURL(i);
+        preload.push(img);
+    }
+
+    let current = Math.floor(Math.random() * TOTAL_IMAGES) + 1;
+    setInterval(() => {
+        if (current > TOTAL_IMAGES) { current = 1 };
+        console.log("switch image to " , current);
+        pageLogin.style.backgroundImage = shipURL(current++);
+    }, 3000);
+
+</script>

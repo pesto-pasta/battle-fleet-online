@@ -20,6 +20,11 @@ const customHandlebars = handleBars.create({
                 return options.fn(this);
             }
         },
+        "exists": function(variable, options) {
+            if (typeof variable !== 'undefined') {
+                return options.fn(this);
+            }
+        }
     }
 
 })
@@ -53,7 +58,6 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
     res.render("login", { failureReason: req.query.login });
-
 })
 
 app.post('/login', (req, res) => {
@@ -77,7 +81,7 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('/signup', (req, res) => {
-    res.render('signup');
+    res.render('login', { signup: true });
 })
 
 app.post('/signup', (req, res) => {
@@ -91,15 +95,11 @@ app.post('/signup', (req, res) => {
     // more error conditions would go here..
     
     if (error) {
-        res.render('signup', { error });
+        res.render('login', { error });
     } else {
         const newUser = { username: req.body.username, password: req.body.password };
         users.push(newUser);
         req.session.user = newUser;
         res.redirect('/account');
-
     }
-
-
-
 })

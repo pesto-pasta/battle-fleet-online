@@ -18,6 +18,10 @@ input {
     border-radius: 3px;
 }
 
+input[type=submit] {
+    border: 0;
+}
+
 input:focus {
     outline: none;
 }
@@ -93,7 +97,6 @@ input:focus {
     height: 100%;
     align-items: center;
     justify-content: center;
-    /* background-image: url('/img/ship_gifs/ship1.gif'); */
     z-index: 1;
     background-color: rgba(50, 138, 123, .6);
 }
@@ -126,4 +129,6 @@ input:focus {
 
 #Page-Login #LoginForm input[type=submit] {
     background-color: #3686a3;
+    color: white;
+    font-weight: bold;
 }

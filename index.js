@@ -67,7 +67,7 @@ app.post('/login', (req, res) => {
         req.session.user = user;
         res.redirect('/account');
     } else {
-        res.redirect('/login?login=failed');
+        res.render('login', { errors: ["Username or password is not valid!"] })
     }
 })
 
@@ -85,17 +85,15 @@ app.get('/signup', (req, res) => {
 })
 
 app.post('/signup', (req, res) => {
+
+    let errors = [];
+
     const conflict = users.find((user) => user.username === req.body.username);
-    let error;
-    if (conflict) {
-        error = "That username already exists";
-    } else if (req.body.username.length === 0 || req.body.password.length === 0) {
-        error = "Username and password are required.";
-    }
-    // more error conditions would go here..
+    if (conflict) { errors.push("That username already exists") }
+    if (req.body.username.length === 0 || req.body.password.length === 0) { errors.push("Username and password are required."); }
     
-    if (error) {
-        res.render('login', { error });
+    if (errors.length > 0) {
+        res.render('login', { errors, signup: true });
     } else {
         const newUser = { username: req.body.username, password: req.body.password };
         users.push(newUser);

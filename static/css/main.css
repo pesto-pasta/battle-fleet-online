@@ -10,10 +10,8 @@ body, html {
 
 * {
     box-sizing: border-box;
-    border: 1px solid red;
     padding: 0;
     margin: 0;
-
 }
 
 input {
@@ -121,6 +119,9 @@ input:focus {
 
 }
 
+/******************
+ Login Page
+*****************/
 
 #Page-Login {
     display: flex;
@@ -162,4 +163,14 @@ input:focus {
     background-color: #3686a3;
     color: white;
     font-weight: bold;
+}
+
+#Page-Login .form-errors {
+    padding: 20px 0px;
+    color: #cf0830;
+    list-style-type: none;
+}
+
+#Page-Login h2 {
+    margin-bottom: 20px;
 }

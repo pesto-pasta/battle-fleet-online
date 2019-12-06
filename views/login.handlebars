@@ -9,15 +9,19 @@
                 {{/if}}
             </h2>
         </div>
-        <div class="form-failure">
-            {{#if failureReason }}
-                {{#switch failureReason}}
-                    {{#case "required"}}Login required to access admirals area. Enlist today!{{/case}}
-                    {{#case "failed"}}Invalid username/password{{/case}}
-                {{/switch}}
-            {{/if}}
-        </div>
+        {{#if errors.length }}
+            <ul class="form-errors">
+                {{#each errors}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        {{/if}}
+        
+        {{#if signup}}
+        <form action="/signup" method="POST" id="LoginForm">
+        {{else}}
         <form action="/login" method="POST" id="LoginForm">
+        {{/if}}
             <div class="row"><input type="text" placeholder="Name Of Admiral" name="username" /></div>
             <div class="row"><input type="password" placeholder="Password" name="password" /></div>
             <input type="submit" value="HEAD TO THE SEAS" />

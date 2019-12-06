@@ -3,8 +3,8 @@
         <div class="form-failure">
             {{#if failureReason }}
                 {{#switch failureReason}}
-                    {{#case "required"}}Login required to access admirals area. Enlist today!<br>{{/case}}
-                    {{#case "failed"}}Invalid username/password<br>{{/case}}
+                    {{#case "required"}}Login required to access admirals area. Enlist today!{{/case}}
+                    {{#case "failed"}}Invalid username/password{{/case}}
                 {{/switch}}
             {{/if}}
         </div>
@@ -18,6 +18,9 @@
 <script>
     const pageLogin = document.getElementById("Page-Login");
     const TOTAL_IMAGES = 6;
+
+
+    pageLogin.style.fontSize = '100px';
 
     function shipURL(num) {
         return `/img/ship_gifs/ship${num}.gif`;
@@ -34,7 +37,8 @@
     let current = Math.floor(Math.random() * TOTAL_IMAGES) + 1;
     setInterval(() => {
         if (current > TOTAL_IMAGES) { current = 1 };
-        console.log("switch image to " , current);
+        console.log(pageLogin);
+        console.log("switch image to " , shipURL(current++));
         pageLogin.style.backgroundImage = shipURL(current++);
     }, 3000);
 

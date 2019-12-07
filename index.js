@@ -14,7 +14,7 @@ const makeGame = function (gameCounter, inviter, invitee) {
         invitee: invitee,
         winner: null,
         turnIndex: flipCoin() ? inviter : invitee,
-        
+
 
     }
 }
@@ -68,8 +68,6 @@ function authorize(req, res, next) {
     next();
 }
 
-
-
 app.get('/', (req, res) => {
     res.redirect('/login')
 });
@@ -80,7 +78,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     console.log(req.body);
-    const user = users.find((user) => req.body.username === user.username && req.body.password === user.password);
+    const user = users.find((user) => req.body.username.toLowerCase() === user.username.toLowerCase() && req.body.password === user.password);
     if (user) {
         req.session.user = user;
         res.redirect('/account');
@@ -126,10 +124,11 @@ app.post('/signup', (req, res) => {
 
     let errors = [];
 
-    const conflict = users.find((user) => user.username === req.body.username);
+    const conflict = users.find((user) => user.username.toLowerCase() === req.body.username.toLowerCase());
     if (conflict) { errors.push("That username already exists") }
     if (req.body.username.length === 0 || req.body.password.length === 0) { errors.push("Username and password are required."); }
-
+    if (!/^[a-zA-Z0-9]*$/.test(req.body.username)) { errors.push("Username can only contain numbers and letters."); }
+    
     if (errors.length > 0) {
         res.render('login', { errors, signup: true });
     } else {

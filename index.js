@@ -2,6 +2,10 @@ const express = require('express');
 const session = require('express-session');
 const handleBars = require('express-handlebars');
 
+//battleship game area
+let gameCounter = 9950;
+const games = {};
+
 //const area
 const users = [
     { username: "Tyler", password: "Sayvetz" },

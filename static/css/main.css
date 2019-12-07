@@ -79,7 +79,7 @@ input:focus {
 #Page-Account #declareWarButton {
     width: calc(100% - 100px);
     height: 110px;
-    background-color: rgb(214, 214, 214);
+    background-color: hsl(0, 67%, 43%);
     align-self: center;
     margin: 0px 0px 50px 0px;
     padding: 10px;
@@ -87,6 +87,8 @@ input:focus {
     flex-direction: column;
     align-content: center;
     align-items: center;
+    color: white;
+    background-size: cover;
 }
 
 #Page-Account #declareWarAgainstWho {

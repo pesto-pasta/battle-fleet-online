@@ -3,9 +3,9 @@
         <div class="welcome">
             <h2>
                 {{#if signup}}
-                    Sign on up!
+                    Join the Ranks!
                 {{else}}
-                    Welcome back captain!
+                    Welcome Back Captain!
                 {{/if}}
             </h2>
         </div>
@@ -16,13 +16,13 @@
                 {{/each}}
             </ul>
         {{/if}}
-        
+
         {{#if signup}}
         <form action="/signup" method="POST" id="LoginForm">
         {{else}}
         <form action="/login" method="POST" id="LoginForm">
         {{/if}}
-            <div class="row"><input type="text" placeholder="Name Of Admiral" name="username" /></div>
+            <div class="row"><input type="text" placeholder="Name Of Captain" name="username" /></div>
             <div class="row"><input type="password" placeholder="Password" name="password" /></div>
             <input type="submit" value="HEAD TO THE SEAS" />
         </form>

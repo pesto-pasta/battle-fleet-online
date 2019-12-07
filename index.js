@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const handleBars = require('express-handlebars');
+const {flipCoin} = require('./lib/random');
 
 //battleship game area
 let gameCounter = 9950;

@@ -57,11 +57,11 @@ function authorize(req, res, next) {
 
 app.get('/', (req, res) => {
     res.redirect('/login')
-})
+});
 
 app.get('/login', (req, res) => {
     res.render("login", { failureReason: req.query.login });
-})
+});
 
 app.post('/login', (req, res) => {
     console.log(req.body);
@@ -72,24 +72,28 @@ app.post('/login', (req, res) => {
     } else {
         res.render('login', { errors: ["Username or password is not valid!"] })
     }
-})
+});
 
 app.get('/account', authorize, (req, res) => {
     res.render('account', { user: req.session.user });
-})
+});
 
 app.get('/logout', (req, res) => {
     delete req.session.user;
     res.redirect('/login');
-})
+});
 
 app.get('/signup', (req, res) => {
     res.render('login', { signup: true });
-})
+});
 
 app.get('/battle', (req, res) => {
     const battleID = req.query.id;
     res.render('battle', { battleID });
+});
+
+app.get('/create_game', (req, res) => {
+
 });
 
 app.post('/signup', (req, res) => {
@@ -108,4 +112,4 @@ app.post('/signup', (req, res) => {
         req.session.user = newUser;
         res.redirect('/account');
     }
-})
+});

@@ -94,7 +94,8 @@ input:focus {
 #Page-Account #declareWarAgainstWho {
     width: 400px;
     min-height: 40px;
-    border: thin solid grey;
+    /* border: thin solid grey; */
+    justify-content: space-around;
 }
 
 #Page-Account #declareWarAgainstWho:hover {

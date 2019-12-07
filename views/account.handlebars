@@ -16,6 +16,16 @@
         <h1>!!!DECLARE WAR!!!</h1>
 
         <div id="declareWarAgainstWho">
+            <form action="/create_game" method="POST">
+                <select id="opponentSelector">
+                    <option value="">Select Opponent...</option>
+                    {{#each users}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select> 
+                <input type="submit" value="Wage War"/>
+            </form>
+
         </div>
     </div>
     <div id="gameDataBlock">
@@ -58,11 +68,14 @@ const warButton = document.getElementById("declareWarButton");
 
 warButton.addEventListener('mouseover', (ev) => {
     warButton.style.backgroundImage = 'url(/img/explosion_gif2.gif)';
+
 })
 
 warButton.addEventListener('mouseout', (ev) => {
     warButton.style.backgroundImage = '';
 })
+
+warButton.addEventListener
 
 
 

@@ -52,8 +52,7 @@ function authorize(req, res, next) {
 
 
 app.get('/', (req, res) => {
-    console.log("welcome home");
-
+    res.redirect('/login')
 })
 
 app.get('/login', (req, res) => {
@@ -83,6 +82,11 @@ app.get('/logout', (req, res) => {
 app.get('/signup', (req, res) => {
     res.render('login', { signup: true });
 })
+
+app.get('/battle', (req, res) => {
+    const battleID = req.query.id;
+    res.render('battle', { battleID });
+});
 
 app.post('/signup', (req, res) => {
 

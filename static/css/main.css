@@ -199,3 +199,59 @@ input:focus {
 /*********
 Battle Page
 ***********/
+
+
+#Page-Game {
+
+}
+
+#Page-Game .vessel-menu img {
+    height: 40px;
+}
+
+#Page-Game .side {
+    margin: 30px;
+}
+
+#Page-Game #Game .main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#Page-Game .board {
+    display: flex;
+    flex-direction: column;
+    background-image: url('/img/water_texture.jpg');
+    background-size: cover;
+    position: relative;
+}
+
+#Page-Game .board .vessel {
+    position: absolute;
+    height: 50px;
+    display: block;
+    pointer-events: none;
+}
+
+#Page-Game .board .row {
+    display: flex;
+    flex-direction: row;
+}
+
+#Page-Game .board .row .cell {
+    width: 50px;
+    height: 50px;
+    border: .5px solid rgba(255,255,255,0.4);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+#Page-Game .board .row .cell.header {
+    background-color: rgba(255, 255, 255, 0.4);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}

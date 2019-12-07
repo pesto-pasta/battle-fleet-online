@@ -6,18 +6,28 @@ const handleBars = require('express-handlebars');
 let gameCounter = 9950;
 const games = {};
 
-const makeGame = function (gameCounter, inviter, invitee) {
-    const gameID = gameCounter++;
-
-    games[gameID] = {
+function makeGame(inviter, invitee) {
+    return {
         inviter: inviter,
         invitee: invitee,
         winner: null,
         turnIndex: flipCoin() ? inviter : invitee,
-
-
+        players: {
+            [inviter]: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            },
+            [invitee]: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            }
+        }
     }
+
 }
+
 
 
 
@@ -116,7 +126,10 @@ app.post('/create_game', authorize, (req, res) => {
         res.redirect('/account');
         return;
     }
-    res.render('game', {gameID})
+    const gameID = gameCounter++;
+    games[gameID] = makeGame(req.session.user.username, req.body.opponent);  //as far as server is concerned, the game is made here.
+
+    res.render('game', { gameID })
 
 });
 
@@ -128,7 +141,7 @@ app.post('/signup', (req, res) => {
     if (conflict) { errors.push("That username already exists") }
     if (req.body.username.length === 0 || req.body.password.length === 0) { errors.push("Username and password are required."); }
     if (!/^[a-zA-Z0-9]*$/.test(req.body.username)) { errors.push("Username can only contain numbers and letters."); }
-    
+
     if (errors.length > 0) {
         res.render('login', { errors, signup: true });
     } else {

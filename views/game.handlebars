@@ -49,6 +49,9 @@
     let MODE;
     const MODE_CONFIGS = {
         [Mode.SETUP]: {
+            playerBoard: {
+                direction: Direction.HORIZONTAL
+            }
         }
     }
 
@@ -81,11 +84,7 @@
         if (ev.target.dataset.index) {
             const y = Math.floor(ev.target.dataset.index / GAME_SIZE);
             const x = ev.target.dataset.index % GAME_SIZE;
-            currentConfig.playerBoard = {
-                coords: [x, y],
-                direction: Direction.HORIZONTAL,
-                size: 5
-            }
+            currentConfig.playerBoard.coords = [x,y];
         } else {
             currentConfig.playerBoard;
         }
@@ -94,7 +93,7 @@
     });
 
     playerBoard.addEventListener('mouseout', () => {
-
+        
     })
 
     playerBoard.addEventListener('click', () => {
@@ -106,10 +105,21 @@
     });
 
     function vesselSidebarClick(size) {
-        currentConfig.placing = size;
+        currentConfig.playerBoard.size = size;
+        drawPlayerBoard();
     }
 
-    
+    window.addEventListener('keydown', (ev) => {
+        switch(MODE) {
+            case Mode.SETUP:
+                console.log(ev);
+                if (currentConfig.playerBoard && ev.key === "r") {
+                    currentConfig.playerBoard.direction =  currentConfig.playerBoard.direction === Direction.VERTICAL ? Direction.HORIZONTAL : Direction.VERTICAL;
+                    drawPlayerBoard();
+                }
+            break;
+        }
+    })
 
     function makeBoard(element, size) {
 
@@ -175,6 +185,11 @@
                 playerBoard.appendChild(img);
                 currentConfig.img = img;
                 currentConfig.img.classList.add('vessel');
+            }
+            if (currentConfig.playerBoard.direction === Direction.HORIZONTAL) {
+                currentConfig.img.classList.remove('vertical');
+            } else {
+                currentConfig.img.classList.add('vertical');
             }
             currentConfig.img.src = `/img/fleet/standard/${currentConfig.playerBoard.size}.png`;
             currentConfig.img.style.left = (currentConfig.playerBoard.coords[0] + 1) * 50 + 'px';

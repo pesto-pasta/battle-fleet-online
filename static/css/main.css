@@ -234,6 +234,11 @@ Battle Page
     pointer-events: none;
 }
 
+#Page-Game .board .vessel.vertical {
+    transform: rotate(90deg);
+    transform-origin: 25px 25px;
+}
+
 #Page-Game .board .row {
     display: flex;
     flex-direction: row;

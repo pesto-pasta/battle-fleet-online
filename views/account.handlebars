@@ -17,7 +17,7 @@
 
         <div id="declareWarAgainstWho">
             <form action="/create_game" method="POST">
-                <select id="opponentSelector">
+                <select id="opponentSelector" name="opponent">
                     <option value="">Select Opponent...</option>
                     {{#each users}}
                         <option value="{{this}}">{{this}}</option>

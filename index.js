@@ -6,6 +6,21 @@ const handleBars = require('express-handlebars');
 let gameCounter = 9950;
 const games = {};
 
+const makeGame = function (gameCounter, inviter, invitee) {
+    const gameID = gameCounter++;
+
+    games[gameID] = {
+        inviter: inviter,
+        invitee: invitee,
+        winner: null,
+        turnIndex: flipCoin() ? inviter : invitee,
+        
+
+    }
+}
+
+
+
 //const area
 const users = [
     { username: "Tyler", password: "Sayvetz" },
@@ -24,7 +39,7 @@ const customHandlebars = handleBars.create({
                 return options.fn(this);
             }
         },
-        "exists": function(variable, options) {
+        "exists": function (variable, options) {
             if (typeof variable !== 'undefined') {
                 return options.fn(this);
             }
@@ -75,7 +90,11 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/account', authorize, (req, res) => {
-    res.render('account', { user: req.session.user });
+    res.render('account', {
+        user: req.session.user,
+        users: users.map((user) => user.username).filter((username) => username !== req.session.user.username),
+    })
+
 });
 
 app.get('/logout', (req, res) => {
@@ -87,12 +106,19 @@ app.get('/signup', (req, res) => {
     res.render('login', { signup: true });
 });
 
-app.get('/battle', (req, res) => {
-    const battleID = req.query.id;
-    res.render('battle', { battleID });
+app.get('/game', (req, res) => {
+    const gameID = req.query.id;
+    res.render('game', { gameID });
 });
 
-app.get('/create_game', (req, res) => {
+app.post('/create_game', authorize, (req, res) => {
+
+    const opponent = users.find((user) => req.body.opponent === user.username);
+    if (!opponent) {
+        res.redirect('/account');
+        return;
+    }
+    res.render('game', {gameID})
 
 });
 
@@ -103,7 +129,7 @@ app.post('/signup', (req, res) => {
     const conflict = users.find((user) => user.username === req.body.username);
     if (conflict) { errors.push("That username already exists") }
     if (req.body.username.length === 0 || req.body.password.length === 0) { errors.push("Username and password are required."); }
-    
+
     if (errors.length > 0) {
         res.render('login', { errors, signup: true });
     } else {

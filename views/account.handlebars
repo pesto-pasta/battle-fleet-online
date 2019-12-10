@@ -9,11 +9,11 @@
             Scoreboard
             <div id="scores">
                 <div class="winLoseBox" id="winBox">
-                    number of wins <br>
+                    {{user.wins}} <br>
                     WINS
                 </div>
                 <div class="winLoseBox" id="lossBox">
-                    number of losses <br>
+                    {{user.losses}} <br>
                     LOSSES
                 </div>
             </div>
@@ -56,15 +56,9 @@
                 <div class="games" id="pendingInvites">
                     {{#each pendingGames}}
                         <div class="game">
+                            {{this.challengeText}}<br>
                             GameId = {{this.id}}<br>
-                            {{#if (user.username === this.invitee)}}
-                                {{this.inviter}} Declared war!
-                            {{else}}
-                                You declared war on {{this.invitee}}
-                            {{/if}}
-
-                            {{#if }}
-
+                            Admirals = {{this.inviter}} and {{this.invitee}}<br>
 
                         </div>
                     {{/each}}

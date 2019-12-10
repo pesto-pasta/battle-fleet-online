@@ -4,11 +4,72 @@ const handleBars = require('express-handlebars');
 const { flipCoin } = require('./lib/random');
 
 //battleship game area
-let gameCounter = 9951;
+let gameCounter = 9954;
 const games = {
     9950: {
-        inviter: null,
-        invitee: null,
+        id: 9950,
+        inviter: "Tyler",
+        invitee: "Jordan",
+        status: "pending", //is the game pending, active, or complete? It is pending when created.
+        winner: null,
+        turnIndex: flipCoin() ? null : null,
+        players: {
+            bob: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            },
+            josie: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            }
+        }
+    },
+    9951: {
+        id: 9951,
+        inviter: "a",
+        invitee: "asdf",
+        status: "pending", //is the game pending, active, or complete? It is pending when created.
+        winner: null,
+        turnIndex: flipCoin() ? null : null,
+        players: {
+            bob: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            },
+            josie: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            }
+        }
+    },
+    9952: {
+        id: 9952,
+        inviter: "Jordan",
+        invitee: "asdf",
+        status: "pending", //is the game pending, active, or complete? It is pending when created.
+        winner: null,
+        turnIndex: flipCoin() ? null : null,
+        players: {
+            bob: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            },
+            josie: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            }
+        }
+    },
+    9953: {
+        id: 9953,
+        inviter: "a",
+        invitee: "Jordan",
         status: "active", //is the game pending, active, or complete? It is pending when created.
         winner: null,
         turnIndex: flipCoin() ? null : null,
@@ -51,24 +112,25 @@ function makeGame(gameId, inviter, invitee) {
 
 }
 
-function getGameSubset(gamesObj, status) {
+function getGameSubset(gamesObj, status, user) {
     const keysArray = Object.keys(gamesObj);
-    const pendingArray = keysArray.filter((key) => gamesObj[key].status === status);
-    const pendingGames = {};
-    for (const key of pendingArray) {
-        Object.assign(pendingGames, {[key]: gamesObj[key]} )
+    const pendingArray = keysArray.filter((key) => gamesObj[key].status === status && (user.username === gamesObj[key].invitee || user.username === gamesObj[key].inviter));
+    const gameSubset = pendingArray.map(key => gamesObj[key]);
+    if (status === "pending") {
+        for (const game of gameSubset) {
+            game.inviter === user.username ? game.challengeText = "You declared war on " + game.invitee : game.challengeText = "You were challenged by " + game.inviter;
+        }
     }
-    
-    return pendingGames;
+    return gameSubset;
 }
 
 
 //const area
 const users = [
-    { username: "Tyler", password: "Sayvetz" },
-    { username: "Jordan", password: "Soltman Pizza" },
-    { username: "asdf", password: "asdf" },
-    { username: "a", password: "a" },
+    { username: "Tyler", password: "S", wins: 675, losses: 0 },
+    { username: "Jordan", password: "S", wins: 0, losses: 0 },
+    { username: "asdf", password: "a", wins: 0, losses: 0 },
+    { username: "a", password: "a", wins: 0, losses: 0 },
 ];
 const app = express();
 const customHandlebars = handleBars.create({
@@ -86,43 +148,12 @@ const customHandlebars = handleBars.create({
             if (typeof variable !== 'undefined') {
                 return options.fn(this);
             }
-        }
+        },
     }
 
 })
 
-(function() {
-    function checkCondition(v1, operator, v2) {
-        switch(operator) {
-            case '==':
-                return (v1 == v2);
-            case '===':
-                return (v1 === v2);
-            case '!==':
-                return (v1 !== v2);
-            case '<':
-                return (v1 < v2);
-            case '<=':
-                return (v1 <= v2);
-            case '>':
-                return (v1 > v2);
-            case '>=':
-                return (v1 >= v2);
-            case '&&':
-                return (v1 && v2);
-            case '||':
-                return (v1 || v2);
-            default:
-                return false;
-        }
-    }
 
-    handleBars.registerHelper('ifCond', function (v1, operator, v2, options) {
-        return checkCondition(v1, operator, v2)
-                    ? options.fn(this)
-                    : options.inverse(this);
-    });
-}());
 
 
 
@@ -166,19 +197,24 @@ app.post('/login', (req, res) => {
 
 app.get('/account', authorize, (req, res) => {
 
-    const pendingGames = getGameSubset(games, "pending");
-    const activeGames = getGameSubset(games, "active");
-    const completedGames = getGameSubset(games, "complete");
+    const pendingGamesArrayIncludingCurrentUser = getGameSubset(games, "pending", req.session.user);
+    const activeGamesArrayIncludingCurrentUser = getGameSubset(games, "active", req.session.user);
+    const completedGamesArrayIncludingCurrentUser = getGameSubset(games, "complete", req.session.user);
+
+
+
 
 
     res.render('account', {
 
         user: req.session.user,
         users: users.map((user) => user.username).filter((username) => username !== req.session.user.username), //this variable, being sent to the client, makes a list of users that excludes the active user.
-        pendingGames: pendingGames,
-        activeGames: activeGames,
-        completedGames: completedGames,
-        
+        pendingGames: pendingGamesArrayIncludingCurrentUser,
+        activeGames: activeGamesArrayIncludingCurrentUser,
+        completedGames: completedGamesArrayIncludingCurrentUser,
+
+
+
     })
 
 });

@@ -1,16 +1,38 @@
 const express = require('express');
 const session = require('express-session');
 const handleBars = require('express-handlebars');
-const {flipCoin} = require('./lib/random');
+const { flipCoin } = require('./lib/random');
 
 //battleship game area
-let gameCounter = 9950;
-const games = {};
+let gameCounter = 9951;
+const games = {
+    9950: {
+        inviter: null,
+        invitee: null,
+        status: "active", //is the game pending, active, or complete? It is pending when created.
+        winner: null,
+        turnIndex: flipCoin() ? null : null,
+        players: {
+            bob: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            },
+            josie: {
+                ships: null,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            }
+        }
+    }
+};
 
-function makeGame(inviter, invitee) {
+function makeGame(gameId, inviter, invitee) {
     return {
+        id: gameId,
         inviter: inviter,
         invitee: invitee,
+        status: "pending", //is the game pending, active, or complete? It is pending when created.
         winner: null,
         turnIndex: flipCoin() ? inviter : invitee,
         players: {
@@ -29,14 +51,24 @@ function makeGame(inviter, invitee) {
 
 }
 
-
+function getGameSubset(gamesObj, status) {
+    const keysArray = Object.keys(gamesObj);
+    const pendingArray = keysArray.filter((key) => gamesObj[key].status === status);
+    const pendingGames = {};
+    for (const key of pendingArray) {
+        Object.assign(pendingGames, {[key]: gamesObj[key]} )
+    }
+    
+    return pendingGames;
+}
 
 
 //const area
 const users = [
     { username: "Tyler", password: "Sayvetz" },
     { username: "Jordan", password: "Soltman Pizza" },
-    { username: "asdf", password: "asdf" }
+    { username: "asdf", password: "asdf" },
+    { username: "a", password: "a" },
 ];
 const app = express();
 const customHandlebars = handleBars.create({
@@ -59,6 +91,41 @@ const customHandlebars = handleBars.create({
 
 })
 
+(function() {
+    function checkCondition(v1, operator, v2) {
+        switch(operator) {
+            case '==':
+                return (v1 == v2);
+            case '===':
+                return (v1 === v2);
+            case '!==':
+                return (v1 !== v2);
+            case '<':
+                return (v1 < v2);
+            case '<=':
+                return (v1 <= v2);
+            case '>':
+                return (v1 > v2);
+            case '>=':
+                return (v1 >= v2);
+            case '&&':
+                return (v1 && v2);
+            case '||':
+                return (v1 || v2);
+            default:
+                return false;
+        }
+    }
+
+    handleBars.registerHelper('ifCond', function (v1, operator, v2, options) {
+        return checkCondition(v1, operator, v2)
+                    ? options.fn(this)
+                    : options.inverse(this);
+    });
+}());
+
+
+
 app.use(express.static("static"));
 
 //configure express
@@ -66,7 +133,6 @@ app.engine('handlebars', customHandlebars.engine);
 app.set('view engine', 'handlebars');
 app.use(express.urlencoded({ extended: true }));
 app.use(session({ secret: "87654dddkl", resave: true, saveUninitialized: true }));
-
 app.listen(3000, () => {
     console.log("The server is now running");
 })
@@ -99,9 +165,20 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/account', authorize, (req, res) => {
+
+    const pendingGames = getGameSubset(games, "pending");
+    const activeGames = getGameSubset(games, "active");
+    const completedGames = getGameSubset(games, "complete");
+
+
     res.render('account', {
+
         user: req.session.user,
-        users: users.map((user) => user.username).filter((username) => username !== req.session.user.username),
+        users: users.map((user) => user.username).filter((username) => username !== req.session.user.username), //this variable, being sent to the client, makes a list of users that excludes the active user.
+        pendingGames: pendingGames,
+        activeGames: activeGames,
+        completedGames: completedGames,
+        
     })
 
 });
@@ -116,8 +193,8 @@ app.get('/signup', (req, res) => {
 });
 
 app.get('/game', (req, res) => {
-    const gameID = req.query.id;
-    res.render('game', { gameID });
+    const gameId = req.query.id;
+    res.render('game', { gameId });
 });
 
 app.post('/create_game', authorize, (req, res) => {
@@ -127,10 +204,16 @@ app.post('/create_game', authorize, (req, res) => {
         res.redirect('/account');
         return;
     }
-    const gameID = gameCounter++;
-    games[gameID] = makeGame(req.session.user.username, req.body.opponent);  //as far as server is concerned, the game is made here.
+    const gameId = gameCounter++;
 
-    res.render('game', { gameID })
+    //create the game object
+    games[gameId] = makeGame(gameId, req.session.user.username, req.body.opponent);  //as far as server is concerned, the game is made here.
+
+    //notify the opponent player that they are in a game
+
+
+    //render the game page
+    res.render('game', { gameId })
 
 });
 

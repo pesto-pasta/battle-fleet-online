@@ -6,9 +6,16 @@
             </h1>
         </div>
         <div class="accountHeaderElement" id="leaderboard">
-            scoreboard.
+            Scoreboard
             <div id="scores">
-                Scores in here
+                <div class="winLoseBox" id="winBox">
+                    number of wins <br>
+                    WINS
+                </div>
+                <div class="winLoseBox" id="lossBox">
+                    number of losses <br>
+                    LOSSES
+                </div>
             </div>
         </div>
     </div>
@@ -19,10 +26,10 @@
                 <select id="opponentSelector" name="opponent">
                     <option value="">Select Opponent...</option>
                     {{#each users}}
-                        <option value="{{this}}">{{this}}</option>
+                    <option value="{{this}}">{{this}}</option>
                     {{/each}}
-                </select> 
-                <input type="submit" value="Wage War"/>
+                </select>
+                <input type="submit" value="Wage War" />
             </form>
 
         </div>
@@ -31,20 +38,36 @@
         <div class="gameData">
             <h3>Battles</h3>
             <div id="gameDataContainer">
-                <div class="games">
-                    <div class="game">
-                        Tylers Game against Jordan
-                    </div>
+                <div class="games" id="activeGames">
+                    {{#each activeGames}}
+                        <div class="game">
+                            GameId = {{this.id}}<br>
+                            Against {{this.inviter}}
+                        </div>
+
+                    {{/each}}
+
                 </div>
             </div>
         </div>
         <div class="gameData">
             <h3>Declarations of War</h3>
             <div id="gameDataContainer">
-                <div class="games">
-                    <div class="game">
-                        Jordan has declared war on you!
-                    </div>
+                <div class="games" id="pendingInvites">
+                    {{#each pendingGames}}
+                        <div class="game">
+                            GameId = {{this.id}}<br>
+                            {{#if (user.username === this.invitee)}}
+                                {{this.inviter}} Declared war!
+                            {{else}}
+                                You declared war on {{this.invitee}}
+                            {{/if}}
+
+                            {{#if }}
+
+
+                        </div>
+                    {{/each}}
 
                 </div>
             </div>
@@ -52,7 +75,7 @@
         <div class="gameData">
             <h3>Finished Wars</h3>
             <div id="gameDataContainer">
-                <div class="games">
+                <div class="games" id="finishedGames">
                     <div class="game">
                         Tylers Lost the battle
                     </div>
@@ -63,19 +86,17 @@
 </div>
 <script>
 
-const warButton = document.getElementById("declareWarButton");
+    const warButton = document.getElementById("declareWarButton");
 
-warButton.addEventListener('mouseover', (ev) => {
-    warButton.style.backgroundImage = 'url(/img/explosion_gif2.gif)';
+    warButton.addEventListener('mouseover', (ev) => {
+        warButton.style.backgroundImage = 'url(/img/explosion_gif2.gif)';
+    })
 
-})
+    warButton.addEventListener('mouseout', (ev) => {
+        warButton.style.backgroundImage = '';
+    })
 
-warButton.addEventListener('mouseout', (ev) => {
-    warButton.style.backgroundImage = '';
-})
-
-warButton.addEventListener
-
+ 
 
 
 

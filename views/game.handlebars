@@ -109,6 +109,8 @@
         drawPlayerBoard();
     }
 
+
+//TYLER -- change orientation of the ship on board
     window.addEventListener('keydown', (ev) => {
         switch(MODE) {
             case Mode.SETUP:
@@ -197,7 +199,7 @@
         }
     }
 
-    const vessels = makeVessels(vesselList, [4, 5, 4]);
+    const vessels = makeVessels(vesselList, [4, 5, 3,3,3,3,4]);
 
     const playerBoardCells = makeBoard(playerBoard, GAME_SIZE);
     const opponentBoardCells = makeBoard(opponentBoard, GAME_SIZE);

@@ -50,7 +50,7 @@ const games = {
         id: 9952,
         inviter: "Jordan",
         invitee: "asdf",
-        status: "pending", //is the game pending, active, or complete? It is pending when created.
+        status: "complete", //is the game pending, active, or complete? It is pending when created.
         winner: null,
         turnIndex: flipCoin() ? null : null,
         players: {
@@ -127,7 +127,7 @@ function getGameSubset(gamesObj, status, user) {
 
 //const area
 const users = [
-    { username: "Tyler", password: "S", wins: 675, losses: 0 },
+    { username: "Tyler", password: "S", wins: 611, losses: 0 },
     { username: "Jordan", password: "S", wins: 0, losses: 0 },
     { username: "asdf", password: "a", wins: 0, losses: 0 },
     { username: "a", password: "a", wins: 0, losses: 0 },

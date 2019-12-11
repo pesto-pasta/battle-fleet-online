@@ -92,7 +92,7 @@ Accounts Page..
 }
 
 #Page-Account .winLoseBox#lossBox {
-    color: red;
+    color:  hsl(0, 67%, 43%);
 }
 
 #Page-Account #declareWarButton {
@@ -152,6 +152,8 @@ Accounts Page..
 }
 
 #Page-Account .gameData .game {
+    justify-content: space-between;
+    flex-direction: row;
     height: 80px;
     width: 95%;
     background-color: white;
@@ -160,6 +162,21 @@ Accounts Page..
     padding: 5px;
 
 }
+
+#Page-Account .toBattleButtonDiv {
+    align-items: center;
+}
+
+
+#Page-Account .toBattleButton {
+    background-color: hsl(0, 67%, 43%);
+    border-radius: 10px;
+    color: white;
+
+
+}
+
+
 
 /******************
  Login Page

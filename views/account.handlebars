@@ -36,15 +36,24 @@
     </div>
     <div id="gameDataBlock">
         <div class="gameData">
-            <h3>Battles</h3>
+            <h3>Ongoing Engagements</h3>
             <div id="gameDataContainer">
                 <div class="games" id="activeGames">
                     {{#each activeGames}}
-                        <div class="game">
+                    <div class="game">
+                        <div>
                             GameId = {{this.id}}<br>
-                            Against {{this.inviter}}
+                            Admirals = {{this.inviter}} and {{this.invitee}}<br>
+                        </div>
+                        <div class="toBattleButtonDiv">
+
+                            <form action="/game" method="GET">
+                                <input type="hidden" name="id" value="{{this.id}}" />
+                                <input type="submit" value="To Battle!" class="toBattleButton" />
+                            </form>
                         </div>
 
+                    </div>
                     {{/each}}
 
                 </div>
@@ -55,24 +64,47 @@
             <div id="gameDataContainer">
                 <div class="games" id="pendingInvites">
                     {{#each pendingGames}}
-                        <div class="game">
+                    <div class="game">
+                        <div>
                             {{this.challengeText}}<br>
                             GameId = {{this.id}}<br>
                             Admirals = {{this.inviter}} and {{this.invitee}}<br>
-
                         </div>
+                        <div class="toBattleButtonDiv">
+
+                            <form action="/game" method="GET">
+                                <input type="hidden" name="id" value="{{this.id}}" />
+                                <input type="submit" value="To Battle!" class="toBattleButton"/>
+                            </form>
+                        </div>
+
+                    </div>
                     {{/each}}
 
                 </div>
             </div>
         </div>
         <div class="gameData">
-            <h3>Finished Wars</h3>
+            <h3>Settled Conflicts</h3>
             <div id="gameDataContainer">
                 <div class="games" id="finishedGames">
+                    {{#each completedGames}}
                     <div class="game">
-                        Tylers Lost the battle
+                        <div>
+                            GameId = {{this.id}}<br>
+                            Admirals = {{this.inviter}} and {{this.invitee}}<br>
+                            {{this.winner}} conquered that ocean...
+                        </div>
+                        <div class="toBattleButtonDiv">
+
+                            <form action="/game" method="GET">
+                                <input type="hidden" name="id" value="{{this.id}}" />
+                                <input type="submit" value="Honor the dead?" class="toBattleButton" />
+                            </form>
+                        </div>
+
                     </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
@@ -90,7 +122,8 @@
         warButton.style.backgroundImage = '';
     })
 
- 
+
+
 
 
 

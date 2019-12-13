@@ -127,7 +127,7 @@ function getGameSubset(gamesObj, status, user) {
 
 //const area
 const users = [
-    { username: "Tyler", password: "S", wins: 611, losses: 0 },
+    { username: "Tyler", password: "S", wins: 0, losses: 0 },
     { username: "Jordan", password: "S", wins: 0, losses: 0 },
     { username: "asdf", password: "a", wins: 0, losses: 0 },
     { username: "a", password: "a", wins: 0, losses: 0 },
@@ -212,6 +212,7 @@ app.get('/account', authorize, (req, res) => {
         pendingGames: pendingGamesArrayIncludingCurrentUser,
         activeGames: activeGamesArrayIncludingCurrentUser,
         completedGames: completedGamesArrayIncludingCurrentUser,
+
 
 
 

@@ -248,7 +248,8 @@ Battle Page
 }
 
 #Page-Game .side {
-    margin: 30px;
+    margin: 20px;
+    padding: 10px;
 }
 
 #Page-Game #Game .main {

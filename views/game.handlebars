@@ -8,15 +8,16 @@
                 <h2>Your Ocean</h2>
                 <div class="board" id="PlayerBoard"></div>
             </div>
-            <div class="side" id="Opponent">
-                <h2>Opponent's Ocean</h2>
-                <div class="board" id="OpponentBoard"></div>
-            </div>
             <div class="side" id="VesselMenu">
                 <h2>Vessel Select</h2>
                 <div class="vessel-menu" id="VesselList">
                 </div>
             </div>
+            <div class="side" id="Opponent">
+                <h2>Opponent's Ocean</h2>
+                <div class="board" id="OpponentBoard"></div>
+            </div>
+            
         </div>
     </div>
 </div>
@@ -61,6 +62,7 @@
 
     function hide(element) {
         element.style.display = 'none';
+
     }
 
     function show(element) {
@@ -72,7 +74,7 @@
         currentConfig = MODE_CONFIGS[mode];
         switch (mode) {
             case Mode.SETUP:
-                hide(mainSections.opponent);
+                show(mainSections.opponent);
                 show(mainSections.player);
                 show(mainSections.vesselMenu);
             break;
@@ -199,9 +201,30 @@
         }
     }
 
+    function drawOpponentBoard() {
+        if (currentConfig.opponentBoard) {
+            if (!currentConfig.img) {
+                const img = new Image();
+                opponentBoard.appendChild(img);
+                currentConfig.img = img;
+                currentConfig.img.classList.add('vessel');
+            }
+            if (currentConfig.opponentBoard.direction === Direction.HORIZONTAL) {
+                currentConfig.img.classList.remove('vertical');
+            } else {
+                currentConfig.img.classList.add('vertical');
+            }
+            currentConfig.img.src = `/img/fleet/standard/${currentConfig.opponentBoard.size}.png`;
+            currentConfig.img.style.left = (currentConfig.opponentBoard.coords[0] + 1) * 50 + 'px';
+            currentConfig.img.style.top = (currentConfig.opponentBoard.coords[1] + 1) * 50 + 'px';
+        }
+    }
+
     const vessels = makeVessels(vesselList, [4, 5, 3,3,3,3,4]);
 
     const playerBoardCells = makeBoard(playerBoard, GAME_SIZE);
     const opponentBoardCells = makeBoard(opponentBoard, GAME_SIZE);
+
+    //drawOpponentBoard();
 
 </script>

@@ -21,6 +21,8 @@
 
     class GameBoard {
 
+    
+        
         constructor(targetElement, size = 10) {
             if (!targetElement) {
                 throw new Error("Cannot draw board without a target element!");
@@ -87,6 +89,7 @@
             }
         }
 
+        //TYLER -- create [10*10] and fill it with Trues where ship occupies cells?
         _checkOccupancyArrayCollisions(arrays) {
             const tally = new Array(this.size * this.size).fill(false);
             for (const array of arrays) {
@@ -100,6 +103,7 @@
             return true;
         }
 
+        //TYLER -- convert polar coordinate ship to true/false array called OccupancyArray
         _mapToOccupancyArray(coords, size, direction) {
             const array = new Array(this.size * this.size).fill(false);
             const startIndex = coords.y * this.size + coords.x;

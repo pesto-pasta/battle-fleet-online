@@ -324,3 +324,14 @@ Battle Page
     font-size: 18px;
     font-weight: bold;
 }
+
+#Page-Game #confirm-placements-button {
+
+}
+
+#Page-Game #confirm-placements-button input {
+    background-color: darkred;
+    color: white;
+    height: 50px;
+
+}

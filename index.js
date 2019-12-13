@@ -248,7 +248,7 @@ app.post('/create_game', authorize, (req, res) => {
     games[gameId] = makeGame(gameId, req.session.user.username, req.body.opponent);  //as far as server is concerned, the game is made here.
 
     //notify the opponent player that they are in a game
-
+    //This will happen after placements of ships by the agressor are confirmed
 
     //render the game page
     res.render('setup', { gameId })
@@ -273,3 +273,9 @@ app.post('/signup', (req, res) => {
         res.redirect('/account');
     }
 });
+
+//game API section
+app.post('/confirm_placements', authorize, (req, res) => {
+    console.log(req.body);
+    // games[gameCounter - 1]. turnIndex = 
+})

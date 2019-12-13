@@ -20,188 +20,20 @@
         </div>
     </div>
 </div>
+<script src="/js/game_board.js"></script>
 <script>
-    const gameContainer = document.getElementById("Game");
-    const gameId = gameContainer.dataset.game;
 
-    const Mode = {
-        SETUP: 'SETUP'
-    }
+    const opponentBoard = new GameBoard(document.getElementById("OpponentBoard"));
 
-    const Direction = {
-        HORIZONTAL: 'HORIZONTAL',
-        VERTICAL: 'VERTICAL'
-    }
+    const ships = [];
 
-    const playerBoard = document.getElementById("PlayerBoard");
-    const opponentBoard = document.getElementById("OpponentBoard");
-    const vesselList = document.getElementById("VesselList");
-    const vesselMenu = document.getElementById("VesselMenu");
 
-    const mainSections = {
-        player: document.getElementById("Player"),
-        opponent: document.getElementById("Opponent"),
-        vesselMenu: document.getElementById("VesselMenu")
-    }
-    
-    const GAME_SIZE = 10;
-    
-    let MODE;
-    const MODE_CONFIGS = {
-        [Mode.SETUP]: {
-            playerBoard: {
-                direction: Direction.HORIZONTAL
-            }
-        }
-    }
-
-    let currentConfig;
-
-    let playerBoardHover = null;
-
-    function hide(element) {
-        element.style.display = 'none';
-    }
-
-    function show(element) {
-        element.style.display = 'block';
-    }
-
-    function changeMode(mode) {
-        MODE = mode;
-        currentConfig = MODE_CONFIGS[mode];
-        switch (mode) {
-            case Mode.SETUP:
-                hide(mainSections.opponent);
-                show(mainSections.player);
-                show(mainSections.vesselMenu);
-            break;
-        }
-    }
-    changeMode(Mode.SETUP);
-
-    playerBoard.addEventListener('mouseover', (ev) => {
-        if (ev.target.dataset.index) {
-            const y = Math.floor(ev.target.dataset.index / GAME_SIZE);
-            const x = ev.target.dataset.index % GAME_SIZE;
-            currentConfig.playerBoard.coords = [x,y];
-        } else {
-            currentConfig.playerBoard;
-        }
-        
-        drawPlayerBoard();
+    opponentBoard.startPlaceShip(4, '/img/fleet/standard/4.png', (ship) => {
+        // Go to network to attempt to place ship?
+        opponentBoard.addShips(ship);
+        {{!-- opponentBoard.stopPlaceShip(); --}}
+        console.log("PLACE", ship)
     });
-
-    playerBoard.addEventListener('mouseout', () => {
-        
-    })
-
-    playerBoard.addEventListener('click', () => {
-        switch(MODE) {
-            case Mode.SETUP:
-
-            break;
-        }
-    });
-
-    function vesselSidebarClick(size) {
-        currentConfig.playerBoard.size = size;
-        drawPlayerBoard();
-    }
-
-
-//TYLER -- change orientation of the ship on board
-    window.addEventListener('keydown', (ev) => {
-        switch(MODE) {
-            case Mode.SETUP:
-                console.log(ev);
-                if (currentConfig.playerBoard && ev.key === "r") {
-                    currentConfig.playerBoard.direction =  currentConfig.playerBoard.direction === Direction.VERTICAL ? Direction.HORIZONTAL : Direction.VERTICAL;
-                    drawPlayerBoard();
-                }
-            break;
-        }
-    })
-
-    function makeBoard(element, size) {
-
-        const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        const topRow = document.createElement("div");
-        topRow.classList.add('row');
-        element.appendChild(topRow);
-
-        const cells = [];
-
-        for (let i = 0; i < size + 1; i++) {
-            const numberCell = document.createElement("div");
-            numberCell.classList.add('cell', 'header');
-            topRow.appendChild(numberCell);
-            if (i > 0) {
-                numberCell.innerText = i;
-            }
-        }
-
-        for (let i = 0; i < size; i++) {
-            const row = document.createElement("div");
-            row.classList.add('row');
-            element.appendChild(row);
-
-            // First add my letter cell
-            const letterCell = document.createElement("div");
-            letterCell.classList.add('cell', 'header');
-            row.appendChild(letterCell);
-            letterCell.innerText = LETTERS.charAt(i);
-
-            // Now add my remaining cells
-            for (let j = 0; j < size; j++) {
-                const cell = document.createElement("div");
-                cell.dataset.index = i * size + j;
-                cell.classList.add('cell');
-                row.appendChild(cell);
-                cells.push(cell);
-            }
-        }
-
-        return cells;
-
-    }
-
-    function makeVessels(element, vessels, texturePack = "standard") {
-        for (const vessel of vessels) {
-            const div = document.createElement("div");
-            const vesselImage = new Image();
-            element.appendChild(div);
-            div.appendChild(vesselImage);
-
-            vesselImage.src = `/img/fleet/${texturePack}/${vessel}.png`;
-            div.appendChild(vesselImage);
-            vesselImage.addEventListener('click', () => { vesselSidebarClick(vessel); })
-        }
-    }
-
-    function drawPlayerBoard() {
-        if (currentConfig.playerBoard) {
-            if (!currentConfig.img) {
-                const img = new Image();
-                playerBoard.appendChild(img);
-                currentConfig.img = img;
-                currentConfig.img.classList.add('vessel');
-            }
-            if (currentConfig.playerBoard.direction === Direction.HORIZONTAL) {
-                currentConfig.img.classList.remove('vertical');
-            } else {
-                currentConfig.img.classList.add('vertical');
-            }
-            currentConfig.img.src = `/img/fleet/standard/${currentConfig.playerBoard.size}.png`;
-            currentConfig.img.style.left = (currentConfig.playerBoard.coords[0] + 1) * 50 + 'px';
-            currentConfig.img.style.top = (currentConfig.playerBoard.coords[1] + 1) * 50 + 'px';
-        }
-    }
-
-    const vessels = makeVessels(vesselList, [4, 5, 3,3,3,3,4]);
-
-    const playerBoardCells = makeBoard(playerBoard, GAME_SIZE);
-    const opponentBoardCells = makeBoard(opponentBoard, GAME_SIZE);
 
 </script>
+

@@ -32,6 +32,7 @@
                 'mouseOutCell': [],
                 'clickCell': [],
                 'mouseOutBoard': [],
+                'placeShip': []
             };
             this.ships = {};
             this._makeBoard();

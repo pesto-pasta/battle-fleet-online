@@ -229,9 +229,10 @@ app.get('/signup', (req, res) => {
     res.render('login', { signup: true });
 });
 
-app.get('/game', (req, res) => {
+app.get('/setup', (req, res) => {
+    // FIXME: check if game is valid for setup
     const gameId = req.query.id;
-    res.render('game', { gameId });
+    res.render('setup', { gameId });
 });
 
 app.post('/create_game', authorize, (req, res) => {
@@ -250,7 +251,7 @@ app.post('/create_game', authorize, (req, res) => {
 
 
     //render the game page
-    res.render('game', { gameId })
+    res.render('setup', { gameId })
 
 });
 

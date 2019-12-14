@@ -24,9 +24,6 @@
     const gameID = document.getElementById("Game").dataset.gameId;
     const confirmButton = document.getElementById("confirm");
 
-
-    console.dir(myBoard);
-
     const gameBoard = new GameBoard(myBoard, '/img/fleet/standard/');
 
     //compile and send shipsPositions in body
@@ -34,6 +31,10 @@
         const ships = gameBoard.getShips();
         console.log(ships);
         axios.post('/confirm_placements/' + gameID, ships);
+    })
+
+    axios.get('/get_placements/'+ gameId).then((res) => {
+        console.log("ships", result);
     })
 
     const shipsToPlace = [

@@ -1,7 +1,5 @@
 (function (target) {
 
-    
-
     class GameBoard {
 
         // imgSrcRoot is the root folder where the images should be found
@@ -21,6 +19,7 @@
                 'shipClicked': [],
             };
             this._ships = {};
+            this._markers = {};
             this._makeBoard();
             this._shipPlacementEventHandlers();
         }
@@ -71,8 +70,8 @@
         removeShip(coords) {
             const key = this._coordinateToKey(coords);
             const element = this._ships[key].element;
-            this.shipContainer.removeChild(element);
-            delete this.shipContainer[key];
+            this._shipContainer.removeChild(element);
+            delete this._shipContainer[key];
         }
 
         clearShips() {
@@ -211,7 +210,7 @@
             // IF there is no more placing ship, we remove the element.
             if (!this.placingShip || !this.placingShip.coords) {
                 if (this.placingShipElement) { 
-                    this.shipContainer.removeChild(this.placingShipElement) 
+                    this._shipContainer.removeChild(this.placingShipElement) 
                     this.placingShipElement = null;
                 }
                 return;
@@ -219,7 +218,7 @@
 
             if (!this.placingShipElement) {
                 this.placingShipElement = new Image();
-                this.shipContainer.appendChild(this.placingShipElement);
+                this._shipContainer.appendChild(this.placingShipElement);
             }
 
             const valid = this._checkIfShipIsValid(this.placingShip.coords, this.placingShip.size, this.placingShip.direction);
@@ -233,7 +232,7 @@
                 if (!ship.element) {
                     ship.element = new Image();
                     this._configureShipImg(ship.element, ship.ship.size, ship.ship.variant, ship.ship.coords, ship.ship.direction);
-                    this.shipContainer.appendChild(ship.element);
+                    this._shipContainer.appendChild(ship.element);
                 }
             }
         }
@@ -255,9 +254,13 @@
             const gridContainer = document.createElement('div');
             this._targetElement.appendChild(gridContainer);
 
-            this.shipContainer = document.createElement('div');
-            this.shipContainer.classList.add('ship-container');
-            this._targetElement.appendChild(this.shipContainer);
+            this._shipContainer = document.createElement('div');
+            this._shipContainer.classList.add('ship-container');
+            this._targetElement.appendChild(this._shipContainer);
+
+            this._markerContainer = document.createElement('div');
+            this._markerContainer.classList.add('marker-container');
+            this._targetElement.appendChild(this._markerContainer);
 
             const topRow = document.createElement("div");
             topRow.classList.add('row');

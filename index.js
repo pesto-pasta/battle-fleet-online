@@ -77,10 +77,6 @@ const customHandlebars = handleBars.create({
 
 })
 
-
-
-
-
 app.use(express.static("static"));
 
 //configure express
@@ -126,21 +122,12 @@ app.get('/account', authorize, (req, res) => {
     const activeGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.ACTIVE, req.session.user);
     const completedGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.COMPLETE, req.session.user);
 
-
-
-
-
     res.render('account', {
-
         user: req.session.user,
         users: users.map((user) => user.username).filter((username) => username !== req.session.user.username), //this variable, being sent to the client, makes a list of users that excludes the active user.
         pendingGames: pendingGamesArrayIncludingCurrentUser,
         activeGames: activeGamesArrayIncludingCurrentUser,
         completedGames: completedGamesArrayIncludingCurrentUser,
-
-
-
-
     })
 
 });

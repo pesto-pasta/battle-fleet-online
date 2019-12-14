@@ -1,32 +1,17 @@
 (function (target) {
 
-    // Configures a ship by setting it's x/y coords and classes
-    function configureShipImg(img, imgSrc, coords, direction, options = {}) {
-        // Clear the initial classes
-        img.className = '';
-        img.src = imgSrc;
-        img.classList.add('vessel');
-        if (direction === GameBoard.Direction.VERTICAL) {
-            img.classList.add('vertical');
-        }
-        if (options.placing) {
-            img.classList.add('placing');
-        }
-        if (options.invalid) {
-            img.classList.add('invalid');
-        }
-        img.style.left = (coords.x + 1) * 50 + 'px';
-        img.style.top = (coords.y + 1) * 50 + 'px';  
-    }
+    
 
     class GameBoard {
 
-        constructor(targetElement, size = 10) {
+        // imgSrcRoot is the root folder where the images should be found
+        constructor(targetElement, imgSrcRoot, size = 10) {
             if (!targetElement) {
                 throw new Error("Cannot draw board without a target element!");
             }
             this._targetElement = targetElement;
             this._size = size;
+            this._imgSrcRoot = imgSrcRoot;
             this._eventListeners = {
                 'mouseOverCell': [],
                 'mouseOutCell': [],
@@ -40,8 +25,8 @@
             this._shipPlacementEventHandlers();
         }
 
-        startPlaceShip(size, imgSrc) {
-            this.placingShip = { size, imgSrc, direction: GameBoard.Direction.HORIZONTAL, coords: null };
+        startPlaceShip(size, variant) {
+            this.placingShip = { size, variant, direction: GameBoard.Direction.HORIZONTAL, coords: null };
         }
 
         stopPlaceShip() {
@@ -63,7 +48,7 @@
         //      coords: { x: number, y: number },
         //      direction: "VERTICAL" | "HORIZONTAL",
         //      size: number,
-        //      imgSrc: string
+        //      variant?: string
         // }
         addShips(ships) {
             const shipsToAdd = Array.isArray(ships) ? ships : [ships];
@@ -101,6 +86,25 @@
         }
 
         /** "PRIVATE" METHODS */
+
+        // Configures a ship by setting it's x/y coords and classes
+        _configureShipImg(img, size, variant, coords, direction, options = {}) {
+            // Clear the initial classes
+            img.className = '';
+            img.src = `${this._imgSrcRoot}${size}${variant ? varient : ''}.png`;
+            img.classList.add('vessel');
+            if (direction === GameBoard.Direction.VERTICAL) {
+                img.classList.add('vertical');
+            }
+            if (options.placing) {
+                img.classList.add('placing');
+            }
+            if (options.invalid) {
+                img.classList.add('invalid');
+            }
+            img.style.left = (coords.x + 1) * 50 + 'px';
+            img.style.top = (coords.y + 1) * 50 + 'px';
+        }
 
         //TYLER -- create [10*10] and fill it with Trues where ship occupies cells?
         _checkOccupancyArrayCollisions(arrays) {
@@ -179,7 +183,7 @@
                         coords,
                         direction: this.placingShip.direction,
                         size: this.placingShip.size,
-                        imgSrc: this.placingShip.imgSrc
+                        variant: this.placingShip.variant
                     }
                     this._callEventListeners('shipPlaced', ship);
                     
@@ -217,7 +221,7 @@
             }
 
             const valid = this._checkIfShipIsValid(this.placingShip.coords, this.placingShip.size, this.placingShip.direction);
-            configureShipImg(this.placingShipElement, this.placingShip.imgSrc, this.placingShip.coords, this.placingShip.direction, { placing: true, invalid: !valid })
+            this._configureShipImg(this.placingShipElement, this.placingShip.size, this.placingShip.variant, this.placingShip.coords, this.placingShip.direction, { placing: true, invalid: !valid })
 
         }
 
@@ -226,7 +230,7 @@
             for (const ship of Object.values(this._ships)) {
                 if (!ship.element) {
                     ship.element = new Image();
-                    configureShipImg(ship.element, ship.ship.imgSrc, ship.ship.coords, ship.ship.direction);
+                    this._configureShipImg(ship.element, ship.ship.size, ship.ship.variant, ship.ship.coords, ship.ship.direction);
                     this.shipContainer.appendChild(ship.element);
                 }
             }

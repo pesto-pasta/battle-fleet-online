@@ -21,7 +21,7 @@
 <script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
 <script>
     
-    const myBoard = new GameBoard(document.getElementById("myBoard"));
+    const myBoard = new GameBoard(document.getElementById("myBoard"), '/img/fleet/standard/');
     const postDataCarrier = document.getElementById("postDataCarrier");
     const confirmButton = document.getElementById("confirm");
     
@@ -31,17 +31,14 @@
     })
 
     const shipsToPlace = [{
-        size: 4,
-        imgSrc: '/img/fleet/standard/4.png'
+        size: 4
     }, {
-        size: 3,
-        imgSrc: '/img/fleet/standard/3.png'
+        size: 3
     }, {
-        size: 5,
-        imgSrc: '/img/fleet/standard/5.png'
+        size: 5
     }];
 
-    myBoard.startPlaceShip(5, '/img/fleet/standard/5.png');
+    myBoard.startPlaceShip(5);
 
     myBoard.addEventListener('shipPlaced', (ship) => {
         myBoard.addShips(ship);

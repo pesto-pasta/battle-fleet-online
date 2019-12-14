@@ -33,7 +33,7 @@
     confirmButton.addEventListener("click", () => {
         const ships = gameBoard.getShips();
         console.log(ships);
-        axios.post('/confirm_placements/' + gameID);
+        axios.post('/confirm_placements/' + gameID, ships);
     })
 
     const shipsToPlace = [

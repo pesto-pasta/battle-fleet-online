@@ -266,4 +266,12 @@ app.post('/signup', (req, res) => {
 app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     
     console.dir(req.body);
+
+    const currentGame = games[req.params.game_id];
+    const userGame = currentGame.players[req.session.user];
+
+    if (!userGame.ships) {
+        userGame.ships = req.body.ships;
+    }
+    
 })

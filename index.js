@@ -252,7 +252,7 @@ app.post('/create_game', authorize, (req, res) => {
     //This will happen after placements of ships by the agressor are confirmed
 
     //render the game page
-    res.render('setup', { gameId })
+    res.render('setup', { gameID: gameId })
 
 });
 
@@ -276,6 +276,7 @@ app.post('/signup', (req, res) => {
 });
 
 //game API section
-app.post('/confirm_placements', authorize, (req, res) => {
+app.post('/confirm_placements/:game_id', authorize, (req, res) => {
+    
     console.dir(req.body);
 })

@@ -36,29 +36,25 @@
             })
     })
 
-    axios.get('/get_placements/'+ gameId).then((res) => {
-        console.log("ships", result);
-    })
 
-    const shipsToPlace = [
-        { size: 2 },
-        { size: 3, variant: 'a' },
-        { size: 3, variant: 'b' },
-        { size: 4 },
-        { size: 5 }
-    ];
+    axios.get('/get_placements/'+ gameID).then((result) => {
 
-    let curIdx = 0;
+        const shipsToPlace = result.data;
 
-    gameBoard.startPlaceShip(shipsToPlace[curIdx].size, shipsToPlace[curIdx].variant);
+        let curIdx = 0;
 
-    gameBoard.addEventListener('shipPlaced', (ship) => {
-        gameBoard.addShip(ship);
-        if (curIdx < shipsToPlace.length - 1) {
-            gameBoard.startPlaceShip(shipsToPlace[++curIdx].size, shipsToPlace[curIdx].variant)
-        } else {
-            gameBoard.stopPlaceShip();
-        }
+        gameBoard.startPlaceShip(shipsToPlace[curIdx]);
+
+        gameBoard.addEventListener('shipPlaced', (ship) => {
+            gameBoard.addShip(ship);
+            if (curIdx < shipsToPlace.length - 1) {
+                gameBoard.startPlaceShip(shipsToPlace[++curIdx])
+            } else {
+                gameBoard.stopPlaceShip();
+            }
+        });
+        
     });
+
 
 </script>

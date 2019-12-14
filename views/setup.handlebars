@@ -1,5 +1,5 @@
 <div id="Page-Game">
-    <div id="Game" value="{{gameID}}" data-battle-id="{{ gameID }}">
+    <div id="Game" data-game-id="{{gameID}}">
         <div class="mode">
 
         </div>
@@ -9,10 +9,9 @@
                 <div class="board" id="myBoard"></div>
             </div>
             <div id="confirm-placements-button">
-                <form>
-                    <input id="postDataCarrier" type="hidden" name=""/>
-                    <input id="confirm" type="button" value="Confirm Placements"/>
-                </form>
+
+                <button id="confirm">Confirm Placements</button>
+
             </div>
         </div>
     </div>
@@ -20,14 +19,25 @@
 <script src="/js/game_board.js"></script>
 <script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
 <script>
-    
-    const myBoard = new GameBoard(document.getElementById("myBoard"), '/img/fleet/standard/');
-    const postDataCarrier = document.getElementById("postDataCarrier");
+
+    const myBoard = document.getElementById("myBoard")
+    const gameID = document.getElementById("Game").dataset.gameId;
     const confirmButton = document.getElementById("confirm");
+
+
+    console.dir(myBoard);
+
+
+
+
+    const gameBoard = new GameBoard(myBoard);
+
     
+
     //compile and send shipsPositions in body
-    confirmButton.addEventListener("mousedown", () => {
-        axios.post('/confirm_placements', {myBoard});
+    confirmButton.addEventListener("click", () => {
+        const ships = gameBoard.getShips();
+        axios.post('/confirm_placements/' + gameID, );
     })
 
     const shipsToPlace = [{
@@ -40,13 +50,9 @@
 
     myBoard.startPlaceShip(5);
 
-    myBoard.addEventListener('shipPlaced', (ship) => {
-        myBoard.addShips(ship);
-        myBoard.stopPlaceShip();
-    })
-
-    myBoard.addEventListener('shipClicked', (ship) => {
+    gameBoard.addEventListener('shipClicked', (ship) => {
         console.log("clicked", ship);
+
     });
 
 </script>

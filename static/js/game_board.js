@@ -40,9 +40,11 @@
 
         getShips() {
             // Make a copy of ships and return it
-            return [...this._ships];
-        }
+            const result = Object.values(this._ships);
+            return result.map((val) => val.ship);
 
+        }   
+        
         // Should a be a ship (or array of ships),
         // ship := {
         //      coords: { x: number, y: number },

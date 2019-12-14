@@ -276,6 +276,5 @@ app.post('/signup', (req, res) => {
 
 //game API section
 app.post('/confirm_placements', authorize, (req, res) => {
-    console.log(req.body);
-    // games[gameCounter - 1]. turnIndex = 
+    console.dir(req.body);
 })

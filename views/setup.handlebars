@@ -9,55 +9,31 @@
                 <div class="board" id="myBoard"></div>
             </div>
             <div id="confirm-placements-button">
-                <form action="/confirm_placements" method="POST">
-                    <input id="postDataCarrier" type="hidden" name="gameBoardObjStringified" />
-                    <input id="confirm" type="submit" value="Confirm Placements"/>
+                <form>
+                    <input id="postDataCarrier" type="hidden" name=""/>
+                    <input id="confirm" type="button" value="Confirm Placements"/>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <script src="/js/game_board.js"></script>
+<script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
 <script>
-
+    
     const myBoard = new GameBoard(document.getElementById("myBoard"));
     const postDataCarrier = document.getElementById("postDataCarrier");
     const confirmButton = document.getElementById("confirm");
-    const gameID = document.getElementById("Game");
+    
 
 
-   
 
-    const updateElementValue = (element, newDataString ) => {
-        let andSymbol = "";
-        if (element.value) {
-            andSymbol = "&";
-        }
-       let old = element.value;
-       
-       element.value = old + andSymbol + newDataString;
-
-    }
 
     
 
     //compile and send shipsPositions in body
     confirmButton.addEventListener("mousedown", () => {
-        
-        const outputShips = new Array(100).fill(false);
-        console.log(outputShips);
-        const ships = Object.values(myBoard.ships);
-        for (let ship of ships) {
-            for (let i = 0; i < outputShips.length; i ++ ) {
-                if (ship.occupancy[i]) {
-                    outputShips[i] = true;
-                }
-            }
-        }
-        updateElementValue(postDataCarrier, outputShips);
-        updateElementValue(postDataCarrier, gameID.value);
-        updateElementValue(postDataCarrier, "Even MORE info");
-
+        axios.post('/confirm_placements', {myBoard});
     })
 
 
@@ -81,7 +57,6 @@
         {{!-- myBoard
 .stopPlaceShip(); --}}
         console.log("PLACE", ship);
-        console.log(myBoard.ships);
     });
 
 </script>

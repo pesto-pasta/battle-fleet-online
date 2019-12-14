@@ -196,6 +196,8 @@ app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
     const opponentGame = currentGame.players[opponent];
     
+    
+
     //check for ship placement already. Cant reset your ships... 
     if (!userGame.ships) {
         userGame.ships = req.body;

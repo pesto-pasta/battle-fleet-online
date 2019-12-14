@@ -163,6 +163,7 @@ app.use(express.static("static"));
 app.engine('handlebars', customHandlebars.engine);
 app.set('view engine', 'handlebars');
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(session({ secret: "87654dddkl", resave: true, saveUninitialized: true }));
 app.listen(3000, () => {
     console.log("The server is now running");

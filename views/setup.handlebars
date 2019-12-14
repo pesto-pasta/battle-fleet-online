@@ -25,12 +25,6 @@
     const postDataCarrier = document.getElementById("postDataCarrier");
     const confirmButton = document.getElementById("confirm");
     
-
-
-
-
-    }
-
     //compile and send shipsPositions in body
     confirmButton.addEventListener("mousedown", () => {
         axios.post('/confirm_placements', {myBoard});

@@ -21,28 +21,27 @@
 
     class GameBoard {
 
-    
-        
         constructor(targetElement, size = 10) {
             if (!targetElement) {
                 throw new Error("Cannot draw board without a target element!");
             }
-            this.targetElement = targetElement;
-            this.size = size;
-            this.eventListeners = {
+            this._targetElement = targetElement;
+            this._size = size;
+            this._eventListeners = {
                 'mouseOverCell': [],
                 'mouseOutCell': [],
                 'clickCell': [],
                 'mouseOutBoard': [],
-                'placeShip': []
+                'shipPlaced': [],
+                'shipClicked': [],
             };
-            this.ships = {};
+            this._ships = {};
             this._makeBoard();
             this._shipPlacementEventHandlers();
         }
 
-        startPlaceShip(size, imgSrc, placeHandler) {
-            this.placingShip = { size, imgSrc, direction: GameBoard.Direction.HORIZONTAL, coords: null, placeHandler };
+        startPlaceShip(size, imgSrc) {
+            this.placingShip = { size, imgSrc, direction: GameBoard.Direction.HORIZONTAL, coords: null };
         }
 
         stopPlaceShip() {
@@ -54,17 +53,29 @@
             this.addShips(ships);
         }
 
+        getShips() {
+            // Make a copy of ships and return it
+            return [...this._ships];
+        }
+
+        // Should a be a ship (or array of ships),
+        // ship := {
+        //      coords: { x: number, y: number },
+        //      direction: "VERTICAL" | "HORIZONTAL",
+        //      size: number,
+        //      imgSrc: string
+        // }
         addShips(ships) {
             const shipsToAdd = Array.isArray(ships) ? ships : [ships];
             
             for (const ship of shipsToAdd) {
 
                 // Remove the existing ship if there is already one here
-                if (this.ships[this._coordinateToKey(ship.coords)]) {
+                if (this._ships[this._coordinateToKey(ship.coords)]) {
                     this.removeShip(ship.coords);
                 }
 
-                this.ships[this._coordinateToKey(ship.coords)] = { ship, occupancy: this._mapToOccupancyArray(ship.coords, ship.size, ship.direction) };
+                this._ships[this._coordinateToKey(ship.coords)] = { ship, occupancy: this._mapToOccupancyArray(ship.coords, ship.size, ship.direction) };
             }
             
             this._drawShips();
@@ -72,26 +83,28 @@
 
         removeShip(coords) {
             const key = this._coordinateToKey(coords);
-            const element = this.ships[key].element;
+            const element = this._ships[key].element;
             this.shipContainer.removeChild(element);
             delete this.shipContainer[key];
         }
 
         clearShips() {
-            for (const ship of Object.values(this.ships)) {
+            for (const ship of Object.values(this._ships)) {
                 this.removeShip(ship.coords);
             }
         }
 
         addEventListener(event, callback) {
-            if (this.eventListeners[event]) {
-                this.eventListeners[event].push(callback);
+            if (this._eventListeners[event]) {
+                this._eventListeners[event].push(callback);
             }
         }
 
+        /** "PRIVATE" METHODS */
+
         //TYLER -- create [10*10] and fill it with Trues where ship occupies cells?
         _checkOccupancyArrayCollisions(arrays) {
-            const tally = new Array(this.size * this.size).fill(false);
+            const tally = new Array(this._size * this._size).fill(false);
             for (const array of arrays) {
                 for (let i = 0; i < tally.length; i++) {
                     if (array[i]) {
@@ -105,9 +118,9 @@
 
         //TYLER -- convert polar coordinate ship to true/false array called OccupancyArray
         _mapToOccupancyArray(coords, size, direction) {
-            const array = new Array(this.size * this.size).fill(false);
-            const startIndex = coords.y * this.size + coords.x;
-            const offset = direction === GameBoard.Direction.HORIZONTAL ? 1 : this.size;
+            const array = new Array(this._size * this._size).fill(false);
+            const startIndex = this._coordinateToIndex(coords);
+            const offset = direction === GameBoard.Direction.HORIZONTAL ? 1 : this._size;
             for (let i = 0; i < size; i++) {
                 array[startIndex + i * offset] = true;
             }
@@ -117,20 +130,31 @@
         _coordinateToKey(coords) {
             return coords.x + '-' + coords.y;
         }
+        
+        // Calls all of the envet listener with all of the arguments (which should be an array)
+        _callEventListeners(event, args = []) {
+            // Make args an array if it's not
+            const arrayArgs = Array.isArray(args) ? args : [args];
+            if (this._eventListeners[event]) {
+                for (const handler of this._eventListeners[event]) {
+                    handler.apply(null, arrayArgs);
+                }
+            }
+        }
 
         _checkIfShipIsValid(coords, size, direction) {
 
             // First cehck if it's even on the board
             if ((
                 direction === GameBoard.Direction.HORIZONTAL && 
-                (coords.x > this.size - size || coords.x < 0 ||
-                coords.y > 0 && coords.y > this.size)
+                (coords.x > this._size - size || coords.x < 0 ||
+                coords.y > 0 && coords.y > this._size)
             ) || (direction === GameBoard.Direction.VERTICAL &&
-                (coords.x < 0 || coords.x > this.size ||
-                coords.y < 0 || coords.y > this.size - size)))
+                (coords.x < 0 || coords.x > this._size ||
+                coords.y < 0 || coords.y > this._size - size)))
             { return false }
 
-            const occupancyMaps = Object.values(this.ships).map((ship) => ship.occupancy)
+            const occupancyMaps = Object.values(this._ships).map((ship) => ship.occupancy)
             const newOccupancy = this._mapToOccupancyArray(coords, size, direction)
             return this._checkOccupancyArrayCollisions([...occupancyMaps, newOccupancy])
         }
@@ -150,17 +174,30 @@
             })
             this.addEventListener('clickCell', (coords) => {
                 if (this.placingShip && this._checkIfShipIsValid(coords, this.placingShip.size, this.placingShip.direction)) {
+                    // If we are placing a ship and it's a valid placement, we'll call our event listener
                     const ship = {
                         coords,
                         direction: this.placingShip.direction,
                         size: this.placingShip.size,
                         imgSrc: this.placingShip.imgSrc
                     }
-                    this.placingShip.placeHandler(ship);
+                    this._callEventListeners('shipPlaced', ship);
+                    
+                } else { // See if a ship was clicked
+                    const index = this._coordinateToIndex(coords);
+                    // check if an existing ship is clicked
+                    const ship = Object.values(this._ships).find((ship) => ship.occupancy[index])
+                    if (ship) {
+                        this._callEventListeners('shipClicked', ship.ship);
+                    }
                 }
                 this._drawPlacingShip();
             });
             
+        }
+
+        _coordinateToIndex(coord) {
+            return this._size * coord.y + coord.x;
         }
 
         _drawPlacingShip() {
@@ -186,7 +223,7 @@
 
         _drawShips(ships) {
             // Clear out the existing ships
-            for (const ship of Object.values(this.ships)) {
+            for (const ship of Object.values(this._ships)) {
                 if (!ship.element) {
                     ship.element = new Image();
                     configureShipImg(ship.element, ship.ship.imgSrc, ship.ship.coords, ship.ship.direction);
@@ -197,13 +234,11 @@
 
         _handleCellEvent(type, event) {
             if (event.target.dataset.index) {
-                const y = Math.floor(event.target.dataset.index / this.size);
-                const x = event.target.dataset.index % this.size;
+                const y = Math.floor(event.target.dataset.index / this._size);
+                const x = event.target.dataset.index % this._size;
                 const coords = { x, y };
                 // Fire off any event listeners
-                this.eventListeners[type].forEach((listener) => {
-                    listener(coords);
-                });
+                this._callEventListeners(type, coords);
             }
         }
 
@@ -212,11 +247,11 @@
             const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
             const gridContainer = document.createElement('div');
-            this.targetElement.appendChild(gridContainer);
+            this._targetElement.appendChild(gridContainer);
 
             this.shipContainer = document.createElement('div');
             this.shipContainer.classList.add('ship-container');
-            this.targetElement.appendChild(this.shipContainer);
+            this._targetElement.appendChild(this.shipContainer);
 
             const topRow = document.createElement("div");
             topRow.classList.add('row');
@@ -224,7 +259,7 @@
 
             const cells = [];
 
-            for (let i = 0; i < this.size + 1; i++) {
+            for (let i = 0; i < this._size + 1; i++) {
                 const numberCell = document.createElement("div");
                 numberCell.classList.add('cell', 'header');
                 topRow.appendChild(numberCell);
@@ -233,7 +268,7 @@
                 }
             }
 
-            for (let i = 0; i < this.size; i++) {
+            for (let i = 0; i < this._size; i++) {
                 const row = document.createElement("div");
                 row.classList.add('row');
                 gridContainer.appendChild(row);
@@ -245,9 +280,9 @@
                 letterCell.innerText = LETTERS.charAt(i);
 
                 // Now add my remaining cells
-                for (let j = 0; j < this.size; j++) {
+                for (let j = 0; j < this._size; j++) {
                     const cell = document.createElement("div");
-                    cell.dataset.index = i * this.size + j;
+                    cell.dataset.index = i * this._size + j;
                     cell.classList.add('cell');
                     row.appendChild(cell);
                     cells.push(cell);
@@ -255,12 +290,12 @@
             }
 
 
-            this.targetElement.addEventListener('mouseover', (ev) => this._handleCellEvent('mouseOverCell', ev));
-            this.targetElement.addEventListener('mouseout', (ev) => { 
+            this._targetElement.addEventListener('mouseover', (ev) => this._handleCellEvent('mouseOverCell', ev));
+            this._targetElement.addEventListener('mouseout', (ev) => { 
                 this._handleCellEvent('mouseOutCell', ev); 
-                for (const handler of this.eventListeners.mouseOutBoard) { handler(); }
+                this._callEventListeners('mouseOutBoard');
             });
-            this.targetElement.addEventListener('click', (ev) => this._handleCellEvent('clickCell', ev));
+            this._targetElement.addEventListener('click', (ev) => this._handleCellEvent('clickCell', ev));
 
             window.addEventListener('keydown', (ev) => {
                 if (ev.key === 'r' && this.placingShip) {

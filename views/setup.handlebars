@@ -29,19 +29,16 @@
 
 
 
-    
+    }
 
     //compile and send shipsPositions in body
     confirmButton.addEventListener("mousedown", () => {
         axios.post('/confirm_placements', {myBoard});
     })
 
-
-
-
     const shipsToPlace = [{
         size: 4,
-        imgSrc: '/img/fleet/standard/4.png' 
+        imgSrc: '/img/fleet/standard/4.png'
     }, {
         size: 3,
         imgSrc: '/img/fleet/standard/3.png'
@@ -50,14 +47,15 @@
         imgSrc: '/img/fleet/standard/5.png'
     }];
 
-    myBoard.startPlaceShip(5, '/img/fleet/standard/5.png', (ship) => {
-        // Go to network to attempt to place ship?
-        myBoard
-.addShips(ship);
-        {{!-- myBoard
-.stopPlaceShip(); --}}
-        console.log("PLACE", ship);
+    myBoard.startPlaceShip(5, '/img/fleet/standard/5.png');
+
+    myBoard.addEventListener('shipPlaced', (ship) => {
+        myBoard.addShips(ship);
+        myBoard.stopPlaceShip();
+    })
+
+    myBoard.addEventListener('shipClicked', (ship) => {
+        console.log("clicked", ship);
     });
 
 </script>
-

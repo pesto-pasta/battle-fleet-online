@@ -11,7 +11,7 @@
             <div id="confirm-placements-button">
                 <form action="/confirm_placements" method="POST">
                     <input id="postDataCarrier" type="hidden" name="gameBoardObjStringified" />
-                    <input id="confirm" type="submit" value="Confirm Placements"/>
+                    <input id="confirm" type="submit" value="Confirm Placements" />
                 </form>
             </div>
         </div>
@@ -25,30 +25,27 @@
     const confirmButton = document.getElementById("confirm");
     const gameID = document.getElementById("Game");
 
-
-   
-
-    const updateElementValue = (element, newDataString ) => {
+    const updateElementValue = (element, newDataString) => {
         let andSymbol = "";
         if (element.value) {
             andSymbol = "&";
         }
-       let old = element.value;
-       
-       element.value = old + andSymbol + newDataString;
+        let old = element.value;
+
+        element.value = old + andSymbol + newDataString;
 
     }
 
-    
-
     //compile and send shipsPositions in body
-    confirmButton.addEventListener("mousedown", () => {
-        
+    // JORDAN: usually you use click for buttons. Which only counts it if the mouse goes down
+    // in the element and comes back up in the element (basically not a cancelled click)
+    confirmButton.addEventListener("click", () => {
+
         const outputShips = new Array(100).fill(false);
         console.log(outputShips);
         const ships = Object.values(myBoard.ships);
         for (let ship of ships) {
-            for (let i = 0; i < outputShips.length; i ++ ) {
+            for (let i = 0; i < outputShips.length; i++) {
                 if (ship.occupancy[i]) {
                     outputShips[i] = true;
                 }
@@ -60,12 +57,9 @@
 
     })
 
-
-
-
     const shipsToPlace = [{
         size: 4,
-        imgSrc: '/img/fleet/standard/4.png' 
+        imgSrc: '/img/fleet/standard/4.png'
     }, {
         size: 3,
         imgSrc: '/img/fleet/standard/3.png'
@@ -74,15 +68,15 @@
         imgSrc: '/img/fleet/standard/5.png'
     }];
 
-    myBoard.startPlaceShip(5, '/img/fleet/standard/5.png', (ship) => {
-        // Go to network to attempt to place ship?
-        myBoard
-.addShips(ship);
-        {{!-- myBoard
-.stopPlaceShip(); --}}
-        console.log("PLACE", ship);
-        console.log(myBoard.ships);
+    myBoard.startPlaceShip(5, '/img/fleet/standard/5.png');
+
+    myBoard.addEventListener('shipPlaced', (ship) => {
+        myBoard.addShips(ship);
+        myBoard.stopPlaceShip();
+    })
+
+    myBoard.addEventListener('shipClicked', (ship) => {
+        console.log("clicked", ship);
     });
 
 </script>
-

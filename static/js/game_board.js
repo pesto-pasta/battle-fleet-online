@@ -93,7 +93,7 @@
         _configureShipImg(img, size, variant, coords, direction, options = {}) {
             // Clear the initial classes
             img.className = '';
-            img.src = `${this._imgSrcRoot}${size}${variant ? varient : ''}.png`;
+            img.src = `${this._imgSrcRoot}${size}${variant ? variant : ''}.png`;
             img.classList.add('vessel');
             if (direction === GameBoard.Direction.VERTICAL) {
                 img.classList.add('vertical');
@@ -313,6 +313,9 @@
             })
         }
     }
+
+    // Add an add ship (singular) alias
+    GameBoard.prototype.addShip = GameBoard.prototype.addShips;
 
     GameBoard.Direction = {
         VERTICAL: 'VERTICAL',

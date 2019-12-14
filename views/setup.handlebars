@@ -27,32 +27,33 @@
 
     console.dir(myBoard);
 
-
-
-
-    const gameBoard = new GameBoard(myBoard);
-
-    
+    const gameBoard = new GameBoard(myBoard, '/img/fleet/standard/');
 
     //compile and send shipsPositions in body
     confirmButton.addEventListener("click", () => {
         const ships = gameBoard.getShips();
-        axios.post('/confirm_placements/' + gameID, );
+        console.log(ships);
+        axios.post('/confirm_placements/' + gameID);
     })
 
-    const shipsToPlace = [{
-        size: 4
-    }, {
-        size: 3
-    }, {
-        size: 5
-    }];
+    const shipsToPlace = [
+        { size: 4 },
+        { size: 3, variant: 'a' },
+        { size: 3, variant: 'b' },
+        { size: 5 }
+    ];
 
-    myBoard.startPlaceShip(5);
+    let curIdx = 0;
 
-    gameBoard.addEventListener('shipClicked', (ship) => {
-        console.log("clicked", ship);
+    gameBoard.startPlaceShip(shipsToPlace[curIdx].size, shipsToPlace[curIdx].variant);
 
+    gameBoard.addEventListener('shipPlaced', (ship) => {
+        gameBoard.addShip(ship);
+        if (curIdx < shipsToPlace.length - 1) {
+            gameBoard.startPlaceShip(shipsToPlace[++curIdx].size, shipsToPlace[curIdx].variant)
+        } else {
+            gameBoard.stopPlaceShip();
+        }
     });
 
 </script>

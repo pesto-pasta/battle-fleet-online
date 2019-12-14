@@ -2,100 +2,22 @@ const express = require('express');
 const session = require('express-session');
 const handleBars = require('express-handlebars');
 const { flipCoin } = require('./lib/random');
+const { GameStatus } = require('./const');
 
 //battleship game area
 let gameCounter = 9954;
-const games = {
-    9950: {
-        id: 9950,
-        inviter: "Tyler",
-        invitee: "Jordan",
-        status: "pending", //is the game pending, active, or complete? It is pending when created.
-        winner: null,
-        turnIndex: flipCoin() ? null : null,
-        players: {
-            bob: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            },
-            josie: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            }
-        }
-    },
-    9951: {
-        id: 9951,
-        inviter: "a",
-        invitee: "asdf",
-        status: "pending", //is the game pending, active, or complete? It is pending when created.
-        winner: null,
-        turnIndex: flipCoin() ? null : null,
-        players: {
-            bob: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            },
-            josie: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            }
-        }
-    },
-    9952: {
-        id: 9952,
-        inviter: "Jordan",
-        invitee: "asdf",
-        status: "complete", //is the game pending, active, or complete? It is pending when created.
-        winner: null,
-        turnIndex: flipCoin() ? null : null,
-        players: {
-            bob: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            },
-            josie: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            }
-        }
-    },
-    9953: {
-        id: 9953,
-        inviter: "a",
-        invitee: "Jordan",
-        status: "active", //is the game pending, active, or complete? It is pending when created.
-        winner: null,
-        turnIndex: flipCoin() ? null : null,
-        players: {
-            bob: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            },
-            josie: {
-                ships: null,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            }
-        }
-    }
-};
+const games = {};
+    
 
 function makeGame(gameId, inviter, invitee) {
     return {
         id: gameId,
         inviter: inviter,
         invitee: invitee,
-        status: "pending", //is the game pending, active, or complete? It is pending when created.
+        status: GameStatus.PENDING, //is the game pending, active, or complete? It is pending when created.
         winner: null,
         turnIndex: flipCoin() ? inviter : invitee,
+        shipConfig: [2, 3, 3, 4, 5],
         players: {
             [inviter]: {
                 ships: null,
@@ -116,9 +38,11 @@ function getGameSubset(gamesObj, status, user) {
     const keysArray = Object.keys(gamesObj);
     const pendingArray = keysArray.filter((key) => gamesObj[key].status === status && (user.username === gamesObj[key].invitee || user.username === gamesObj[key].inviter));
     const gameSubset = pendingArray.map(key => gamesObj[key]);
-    if (status === "pending") {
+    if (status === GameStatus.PENDING) {
         for (const game of gameSubset) {
-            game.inviter === user.username ? game.challengeText = "You declared war on " + game.invitee : game.challengeText = "You were challenged by " + game.inviter;
+            game.inviter === user.username ? 
+                game.challengeText = "You declared war on " + game.invitee : 
+                game.challengeText = "You were challenged by " + game.inviter;
         }
     }
     return gameSubset;
@@ -198,9 +122,9 @@ app.post('/login', (req, res) => {
 
 app.get('/account', authorize, (req, res) => {
 
-    const pendingGamesArrayIncludingCurrentUser = getGameSubset(games, "pending", req.session.user);
-    const activeGamesArrayIncludingCurrentUser = getGameSubset(games, "active", req.session.user);
-    const completedGamesArrayIncludingCurrentUser = getGameSubset(games, "complete", req.session.user);
+    const pendingGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.PENDING, req.session.user);
+    const activeGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.ACTIVE, req.session.user);
+    const completedGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.COMPLETE, req.session.user);
 
 
 
@@ -233,7 +157,7 @@ app.get('/signup', (req, res) => {
 app.get('/setup', (req, res) => {
     // FIXME: check if game is valid for setup
     const gameId = req.query.id;
-    res.render('setup', { gameId });
+    res.render('setup', { gameID: gameId });
 });
 
 app.post('/create_game', authorize, (req, res) => {
@@ -281,10 +205,25 @@ app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     console.dir(req.body);
 
     const currentGame = games[req.params.game_id];
-    const userGame = currentGame.players[req.session.user];
-
+    const userGame = currentGame.players[req.session.user.username];
+    const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
+    const opponentGame = currentGame.players[opponent];
+    
+    //check for ship placement already. Cant reset your ships... 
     if (!userGame.ships) {
-        userGame.ships = req.body.ships;
+        userGame.ships = req.body;
     }
     
+    // if both users have ship placement, this game is active.
+    if (opponentGame.ships) {
+        currentGame.status = GameStatus.ACTIVE;
+        res.json({status: "ready"});
+    } else {
+        res.json({status: "waiting"});
+    }
+})
+
+app.get('/get_placements/:game_id', authorize, (req, res) => {
+    //TODO: send ship config to client
+    res.json(games[req.params.game_id].shipConfig);
 })

@@ -32,11 +32,11 @@
         }
 
         setMarkers(markers) {
+            // FIXME: this redraws the the images each time and could have the performance improved
             this._markerContainer.innerHTML = "";
             markers.forEach((marker, idx) => {
                 if (marker !== null) {
                     const coords = this._indexToCoord(idx);
-                    console.log(idx);
                     const img = new Image();
                     img.src = marker ? this._hitImgSrc : this._missImgSrc;
                     img.style.left = (coords.x + 1) * 50 + 'px';
@@ -229,8 +229,8 @@
 
         _indexToCoord(index) {
             return {
-                y: Math.floor(index / this.size),
-                x: index % this.size
+                y: Math.floor(index / this._size),
+                x: index % this._size
             }
         }
 

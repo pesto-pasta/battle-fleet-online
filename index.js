@@ -141,14 +141,14 @@ app.get('/signup', (req, res) => {
     res.render('login', { signup: true });
 });
 
-app.get('/setup', (req, res) => {
+app.get('/setup/:game_id', (req, res) => {
     // FIXME: check if game is valid for setup
-    const gameId = req.query.id;
+    const gameId = req.params.game_id;
     res.render('setup', { gameID: gameId });
 });
 
-app.get('/game', (req, res) => {
-    const gameId = req.query.id;
+app.get('/game/:game_id', (req, res) => {
+    const gameId = req.params.game_id;
     res.render('game', { gameID: gameId });
 })
 
@@ -169,7 +169,7 @@ app.post('/create_game', authorize, (req, res) => {
     //This will happen after placements of ships by the agressor are confirmed
 
     //render the game page
-    res.render('setup', { gameID: gameId })
+    res.redirect('/game/'+gameId);
 
 });
 

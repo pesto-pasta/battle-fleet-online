@@ -22,6 +22,14 @@
     const gameID = document.getElementById("Game").dataset.gameId;
     const confirmButton = document.getElementById("confirm");
 
+    function refresh() {
+        axios.get('/game_status/' + gameID).then((result) => {
+            myBoard.setShips(result.data.ownShipLocations);
+            myBoard.setMarkers(result.data.ownHitMap);
+            theirBoard.setMarkers(result.data.opponentHitMap);
+        });
+    }
+
     const boardConfig = {
         imgSrcRoot: '/img/fleet/standard/',
         hitImgSrc: '/img/hit.png',
@@ -31,17 +39,11 @@
     const myBoard = new GameBoard(document.getElementById("myBoard"), boardConfig);
     const theirBoard = new GameBoard(document.getElementById("theirBoard"), boardConfig);
 
-    axios.get('/game_status/' + gameID).then((result) => {
-        myBoard.setShips(result.data.ownShipLocations);
-        myBoard.setMarkers(result.data.ownHitMap);
-        theirBoard.setMarkers(result.data.opponentHitMap);
-        
-
-
-    });
+    refresh();
 
     theirBoard.addEventListener('clickCell', (coords) => {
         axios.post('/game_attack/' + gameID, coords);
+        refresh();
     })
 
 

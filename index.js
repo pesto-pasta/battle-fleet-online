@@ -3,6 +3,7 @@ const session = require('express-session');
 const handleBars = require('express-handlebars');
 const { flipCoin } = require('./lib/random');
 const { GameStatus } = require('./const');
+const { convertShipToOccupancyArray } = require('./lib/util.js');
 
 //battleship game area
 let gameCounter = 9954;
@@ -12,6 +13,7 @@ const games = {};
 function makeGame(gameId, inviter, invitee) {
     return {
         id: gameId,
+        size: 10,
         inviter: inviter,
         invitee: invitee,
         status: GameStatus.PENDING, //is the game pending, active, or complete? It is pending when created.
@@ -195,8 +197,10 @@ app.post('/signup', (req, res) => {
 //game API section
 app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     
+    
     console.dir(req.body);
 
+    const ships = req.body;
     const currentGame = games[req.params.game_id];
     const userGame = currentGame.players[req.session.user.username];
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
@@ -204,7 +208,7 @@ app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     
 
     //validate the number and configuration of placed ships to make sure they match the ShipConfig set in game.
-    const shipConfigInput = req.body.map((ship) => {return ship.size}).sort();
+    const shipConfigInput = ships.map((ship) => {return ship.size}).sort();
     let valid = true;
     if (shipConfigInput.length === currentGame.shipConfig.length) {
         for (let i = 0; i < shipConfigInput.length; i++) {
@@ -225,7 +229,14 @@ app.post('/confirm_placements/:game_id', authorize, (req, res) => {
 
     //check for ship placement already. Cant reset your ships... 
     if (!userGame.ships) {
-        userGame.ships = req.body;
+
+
+        for (ship of ships) {
+            ship.occupancyArray = convertShipToOccupancyArray(ship.coords, ship.size, ship.direction, currentGame.size);
+            ship.hits = 0;
+        }
+        userGame.ships = ships;
+        
     }
     
     // if both users have ship placement, this game is active.
@@ -258,4 +269,20 @@ app.get('/game_status/:game_id', authorize, (req, res) => {
     };
 
     res.json(returnObject);
+})
+
+app.post('/game_attack/:game_id', authorize, (req, res) => {
+
+    const currentGame = games[req.params.game_id];
+    const userGame = currentGame.players[req.session.user.username];
+    const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
+    const opponentGame = currentGame.players[opponent];
+
+    const attackLocation = (req.body.y * currentGame.size) + req.body.x;
+
+
+    console.log(attackLocation);
+
+
+
 })

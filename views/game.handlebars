@@ -33,6 +33,11 @@
 
     axios.get('/game_status/' + gameID).then((result) => {
         myBoard.setShips(result.data.ownShipLocations);
+        myBoard.setMarkers(result.data.ownHitMap);
+        theirBoard.setMarkers(result.data.opponentHitMap);
+        
+
+
     });
 
 

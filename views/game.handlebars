@@ -31,5 +31,9 @@
     const myBoard = new GameBoard(document.getElementById("myBoard"), boardConfig);
     const theirBoard = new GameBoard(document.getElementById("theirBoard"), boardConfig);
 
+    axios.get('/game_status/' + gameID).then((result) => {
+        myBoard.setShips(result.data.ownShipLocations);
+    });
+
 
 </script>

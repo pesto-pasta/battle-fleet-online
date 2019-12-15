@@ -98,8 +98,9 @@
 
         clearShips() {
             for (const ship of Object.values(this._ships)) {
-                this.removeShip(ship.coords);
+                this.removeShip(ship.ship.coords);
             }
+            this._ships = {};
         }
 
         addEventListener(event, callback) {

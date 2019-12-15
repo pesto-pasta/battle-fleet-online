@@ -322,12 +322,11 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
 
 
 
-    let attackResult = "miss";
-    let hitResult = false;
+    let hit = false;
     let sink = false;
     for (ship of opponentGame.ships) {
         if (ship.occupancyArray[attackLocation]) {
-            hitResult = true;
+            hit = true;
             ship.hits++;
             if (ship.hits === ship.size) {
                 sink = true;

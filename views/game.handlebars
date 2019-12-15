@@ -1,0 +1,35 @@
+<div id="Page-Game">
+    <div id="Game" data-game-id="{{gameID}}">
+        <div class="mode">
+
+        </div>
+        <div class="main">
+            <div class="side">
+                <h2>My Ocean</h2>
+                <div class="board" id="myBoard"></div>
+            </div>
+            <div class="side">
+                <h2>Their Ocean</h2>
+                <div class="board" id="theirBoard"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/game_board.js"></script>
+<script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
+<script>
+
+    const gameID = document.getElementById("Game").dataset.gameId;
+    const confirmButton = document.getElementById("confirm");
+
+    const boardConfig = {
+        imgSrcRoot: '/img/fleet/standard/',
+        hitImgSrc: '/img/hit.png',
+        missImgSrc: '/img/miss.png'
+    }
+
+    const myBoard = new GameBoard(document.getElementById("myBoard"), boardConfig);
+    const theirBoard = new GameBoard(document.getElementById("theirBoard"), boardConfig);
+
+
+</script>

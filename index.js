@@ -147,6 +147,12 @@ app.get('/setup', (req, res) => {
     res.render('setup', { gameID: gameId });
 });
 
+app.get('/game', (req, res) => {
+    const gameId = req.query.id;
+    res.render('game', { gameID: gameId });
+})
+
+
 app.post('/create_game', authorize, (req, res) => {
 
     const opponent = users.find((user) => req.body.opponent === user.username);

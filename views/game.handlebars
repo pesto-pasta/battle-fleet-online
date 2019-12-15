@@ -40,5 +40,9 @@
 
     });
 
+    theirBoard.addEventListener('clickCell', (coords) => {
+        axios.post('/game_attack/' + gameID, coords);
+    })
+
 
 </script>

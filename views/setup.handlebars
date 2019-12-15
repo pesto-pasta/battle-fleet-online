@@ -30,18 +30,6 @@
         missImgSrc: '/img/miss.png'
     });
 
-    const hitSample = [];
-
-    for (let i = 0; i < 100; i++) {
-        if (Math.floor(Math.random() * 5) === 0) {
-            hitSample.push(Math.floor(Math.random() * 2) === 0);
-        } else {
-            hitSample.push(null);
-        }
-    }
-
-    gameBoard.setMarkers(hitSample);
-
     //compile and send shipsPositions in body
     confirmButton.addEventListener("click", () => {
         const ships = gameBoard.getShips();
@@ -53,7 +41,7 @@
     })
 
 
-    axios.get('/get_placements/'+ gameID).then((result) => {
+    axios.get('/game_config/'+ gameID).then((result) => {
 
         const shipsToPlace = result.data;
 

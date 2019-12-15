@@ -169,7 +169,7 @@ app.post('/create_game', authorize, (req, res) => {
     //This will happen after placements of ships by the agressor are confirmed
 
     //render the game page
-    res.redirect('/game/'+gameId);
+    res.redirect('/setup/'+gameId);
 
 });
 

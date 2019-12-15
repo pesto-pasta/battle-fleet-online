@@ -196,7 +196,26 @@ app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
     const opponentGame = currentGame.players[opponent];
     
+
+    //validate the number and configuration of placed ships to make sure they match the ShipConfig set in game.
+    const shipConfigInput = req.body.map((ship) => {return ship.size}).sort();
+    let valid = true;
+    if (shipConfigInput.length === currentGame.shipConfig.length) {
+        for (let i = 0; i < shipConfigInput.length; i++) {
+            if (shipConfigInput[i] !== currentGame.shipConfig[i]) {
+                valid = false;
+                break;
+            }
+        }
     
+    } else {
+        valid = false;   
+    }
+
+    if (!valid) {
+        res.json({error: "ship configuration not legal"})
+        return;
+    }
 
     //check for ship placement already. Cant reset your ships... 
     if (!userGame.ships) {
@@ -212,7 +231,25 @@ app.post('/confirm_placements/:game_id', authorize, (req, res) => {
     }
 })
 
-app.get('/get_placements/:game_id', authorize, (req, res) => {
+app.get('/game_config/:game_id', authorize, (req, res) => {
     //TODO: send ship config to client
     res.json(games[req.params.game_id].shipConfig);
+})
+
+app.get('/game_status/:game_id', authorize, (req, res) => {
+
+    const currentGame = games[req.params.game_id];
+    const userGame = currentGame.players[req.session.user.username];
+    const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
+    const opponentGame = currentGame.players[opponent];
+
+    const returnObject = {
+        ownShipLocations: userGame.ships,
+        ownHitMap: userGame.attacks,
+        opponentHitMap: opponentGame.attacks,
+        gameStatus: currentGame.status,
+        yourTurn: (currentGame.turnIndex === req.session.user.username),
+    };
+
+    res.json(returnObject);
 })

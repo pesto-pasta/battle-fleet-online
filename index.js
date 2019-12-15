@@ -80,6 +80,7 @@ function getGameSubset(gamesObj, status, user) {
 const users = [
     { username: "Tyler", password: "S", wins: 0, losses: 0 },
     { username: "Jordan", password: "S", wins: 0, losses: 0 },
+    { username: "DJratpack", password: "indahouse", wins: 2, losses: 0 },
     { username: "asdf", password: "a", wins: 0, losses: 0 },
     { username: "a", password: "a", wins: 0, losses: 0 },
 ];
@@ -307,6 +308,7 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
     const attackLocation = (req.body.y * currentGame.size) + req.body.x;
 
     //prerequisites for a turn to occur
+    //TODO: make these errors visible in the view. 
     if (opponentGame.attacks[attackLocation] !== null) {
         res.json({error: "You already attacked here!"});
         return;
@@ -319,7 +321,6 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
         res.json({error: "This game is over BUD"});
         return;
     }
-
 
 
     let hit = false;
@@ -335,20 +336,22 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
         }
     }
 
-    
-
 
     //cleanup work
-
-    opponentGame.attacks[attackLocation] = hitResult;
+    opponentGame.attacks[attackLocation] = hit;
     currentGame.turnIndex = opponent;
 
-    //check for win condition
+    //check for win condition and update the necessary items.
+    //TODO: handle what happens to the turnIndex. Can moves still be made on a complete game? 
     let gameOver = false;
     if (!opponentGame.ships.find((ship) => ship.hits !== ship.size)) {
        gameOver = true;
        currentGame.status = GameStatus.COMPLETE;
+       currentGame.winner = req.session.user.username;
+       req.session.user.wins++;
+       users.find((user) => (user.username === opponent)).losses++;
     }
+    //TODO: handle what happens with these three arguments on the client.
     res.json({hit, sink, gameOver})
     
     

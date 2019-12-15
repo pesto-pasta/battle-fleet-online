@@ -5,9 +5,34 @@ const { flipCoin } = require('./lib/random');
 const { GameStatus } = require('./const');
 const { convertShipToOccupancyArray } = require('./lib/util.js');
 
+const ships = JSON.parse(`[{"coords":{"x":8,"y":9},"direction":"HORIZONTAL","size":2,"hits":0,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true]},{"coords":{"x":7,"y":8},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false]},{"coords":{"x":6,"y":7},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"coords":{"x":6,"y":6},"direction":"HORIZONTAL","size":4,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"coords":{"x":5,"y":5},"direction":"HORIZONTAL","size":5,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]}]`)
+
 //battleship game area
 let gameCounter = 9954;
-const games = {};
+const games = {
+    9950: {
+        id: 9950,
+        size: 10,
+        inviter: "Jordan",
+        invitee: "Tyler",
+        status: "ACTIVE", //is the game pending, active, or complete? It is pending when created.
+        winner: null,
+        turnIndex: "Jordan",
+        shipConfig: [2, 3, 3, 4, 5],
+        players: {
+            "Jordan": {
+                ships: ships,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            },
+            "Tyler": {
+                ships: ships,
+                attacks: (new Array(100)).fill(null),
+                lastAttack: null,
+            }
+        }
+    }
+};
     
 
 function makeGame(gameId, inviter, invitee) {
@@ -280,8 +305,29 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
 
     const attackLocation = (req.body.y * currentGame.size) + req.body.x;
 
+    let attackResult = "miss";
+    let hitResult = false;
+    let sink = false;
+    for (ship of opponentGame.ships) {
+        if (ship.occupancyArray[attackLocation]) {
+            hitResult = true;
+            ship.hits++;
+            if (ship.hits === ship.size) {
+                sink = true;
+            } 
+            break;
+        }
+    }
+    opponentGame.attacks[attackLocation] = hitResult;
+    
+    
+    
 
+    console.log(attackResult);
     console.log(attackLocation);
+
+
+
 
 
 

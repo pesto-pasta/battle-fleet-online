@@ -344,14 +344,16 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
     currentGame.turnIndex = opponent;
 
     //check for win condition
+    let gameOver = false;
     if (!opponentGame.ships.find((ship) => ship.hits !== ship.size)) {
-       
+       gameOver = true;
+       currentGame.status = GameStatus.COMPLETE;
     }
-
+    res.json({hit, sink, gameOver})
     
     
 
-    console.log(attackResult);
+
     console.log(attackLocation);
     
 

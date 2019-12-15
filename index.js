@@ -305,12 +305,11 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
 
     const attackLocation = (req.body.y * currentGame.size) + req.body.x;
 
-    let attackResult = "miss";
-    let hitResult = false;
+    let hit = false;
     let sink = false;
     for (ship of opponentGame.ships) {
         if (ship.occupancyArray[attackLocation]) {
-            hitResult = true;
+            hit = true;
             ship.hits++;
             if (ship.hits === ship.size) {
                 sink = true;
@@ -318,17 +317,9 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
             break;
         }
     }
-    opponentGame.attacks[attackLocation] = hitResult;
+    opponentGame.attacks[attackLocation] = hit;
     
-    
-    
-
-    console.log(attackResult);
     console.log(attackLocation);
-
-
-
-
-
+    res.json({hit, sink});
 
 })

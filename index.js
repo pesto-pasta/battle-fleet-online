@@ -298,12 +298,29 @@ app.get('/game_status/:game_id', authorize, (req, res) => {
 
 app.post('/game_attack/:game_id', authorize, (req, res) => {
 
+
     const currentGame = games[req.params.game_id];
     const userGame = currentGame.players[req.session.user.username];
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
     const opponentGame = currentGame.players[opponent];
 
     const attackLocation = (req.body.y * currentGame.size) + req.body.x;
+
+    //prerequisites for a turn to occur
+    if (opponentGame.attacks[attackLocation] !== null) {
+        res.json({error: "You already attacked here!"});
+        return;
+    }
+    if (req.session.user.username !== currentGame.turnIndex) {
+        res.json({error: "Its not your turn BUD"});
+        return;
+    }
+    if (currentGame.status !== GameStatus.ACTIVE) {
+        res.json({error: "This game is over BUD"});
+        return;
+    }
+
+
 
     let attackResult = "miss";
     let hitResult = false;
@@ -318,14 +335,26 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
             break;
         }
     }
-    opponentGame.attacks[attackLocation] = hitResult;
+
     
+
+
+    //cleanup work
+
+    opponentGame.attacks[attackLocation] = hitResult;
+    currentGame.turnIndex = opponent;
+
+    //check for win condition
+    if (!opponentGame.ships.find((ship) => ship.hits !== ship.size)) {
+       
+    }
+
     
     
 
     console.log(attackResult);
     console.log(attackLocation);
-
+    
 
 
 

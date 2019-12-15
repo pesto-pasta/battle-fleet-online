@@ -266,6 +266,13 @@ Battle Page
     position: absolute;
 }
 
+.board .marker-container .marker {
+    position: absolute;
+    height: 50px;
+    display: block;
+    pointer-events: none;
+}
+
 #Page-Game .board {
     display: flex;
     flex-direction: column;

@@ -3,13 +3,20 @@
     class GameBoard {
 
         // imgSrcRoot is the root folder where the images should be found
-        constructor(targetElement, imgSrcRoot, size = 10) {
+        constructor(targetElement, options) {
+
+            const finalOptions = Object.assign({
+                size: 10
+            }, options);
+
             if (!targetElement) {
                 throw new Error("Cannot draw board without a target element!");
             }
             this._targetElement = targetElement;
-            this._size = size;
-            this._imgSrcRoot = imgSrcRoot;
+            this._size = finalOptions.size;
+            this._imgSrcRoot = finalOptions.imgSrcRoot;
+            this._hitImgSrc = finalOptions.hitImgSrc;
+            this._missImgSrc = finalOptions.missImgSrc;
             this._eventListeners = {
                 'mouseOverCell': [],
                 'mouseOutCell': [],
@@ -22,6 +29,22 @@
             this._markers = {};
             this._makeBoard();
             this._shipPlacementEventHandlers();
+        }
+
+        setMarkers(markers) {
+            this._markerContainer.innerHTML = "";
+            markers.forEach((marker, idx) => {
+                if (marker !== null) {
+                    const coords = this._indexToCoord(idx);
+                    console.log(idx);
+                    const img = new Image();
+                    img.src = marker ? this._hitImgSrc : this._missImgSrc;
+                    img.style.left = (coords.x + 1) * 50 + 'px';
+                    img.style.top = (coords.y + 1) * 50 + 'px';
+                    img.classList.add('marker')
+                    this._markerContainer.appendChild(img);
+                }
+            });
         }
 
         startPlaceShip(size, variant) {
@@ -39,8 +62,7 @@
 
         getShips() {
             // Make a copy of ships and return it
-            const result = Object.values(this._ships);
-            return result.map((val) => val.ship);
+            return Object.values(this._ships).map((val) => val.ship);
 
         }   
         
@@ -203,6 +225,13 @@
 
         _coordinateToIndex(coord) {
             return this._size * coord.y + coord.x;
+        }
+
+        _indexToCoord(index) {
+            return {
+                y: Math.floor(index / this.size),
+                x: index % this.size
+            }
         }
 
         _drawPlacingShip() {

@@ -35,5 +35,9 @@
         myBoard.setShips(result.data.ownShipLocations);
     });
 
+    theirBoard.addEventListener('clickCell', (coords) => {
+        axios.post('/game_attack/' + gameID, coords);
+    })
+
 
 </script>

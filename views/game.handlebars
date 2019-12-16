@@ -36,6 +36,7 @@
             myBoard.setShips(result.data.ownShipLocations);
             myBoard.setMarkers(result.data.ownHitMap);
             theirBoard.setMarkers(result.data.opponentHitMap);
+            theirBoard.setShips(result.data.opponentShipLocations);
         });
     }
 

@@ -5,33 +5,13 @@ const { flipCoin } = require('./lib/random');
 const { GameStatus } = require('./const');
 const { convertShipToOccupancyArray } = require('./lib/util.js');
 
-const ships = JSON.parse(`[{"coords":{"x":8,"y":9},"direction":"HORIZONTAL","size":2,"hits":0,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true]},{"coords":{"x":7,"y":8},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false]},{"coords":{"x":6,"y":7},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"coords":{"x":6,"y":6},"direction":"HORIZONTAL","size":4,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},{"coords":{"x":5,"y":5},"direction":"HORIZONTAL","size":5,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]}]`)
-
+const almostOver = JSON.parse(`{"id":9954,"size":10,"inviter":"Tyler","invitee":"Jordan","status":"ACTIVE","winner":null,"turnIndex":"Jordan","shipConfig":[2,3,3,4,5],"players":{"Tyler":{"ships":[{"coords":{"x":0,"y":0},"direction":"HORIZONTAL","size":2,"occupancyArray":[true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":2},{"coords":{"x":0,"y":2},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":3},{"coords":{"x":0,"y":1},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":3},{"coords":{"x":0,"y":4},"direction":"HORIZONTAL","size":4,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":3},{"coords":{"x":0,"y":3},"direction":"HORIZONTAL","size":5,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":5}],"attacks":[true,true,null,null,null,null,null,null,null,null,true,true,true,null,null,null,null,null,null,null,true,true,true,false,false,null,null,null,null,null,true,true,true,true,true,null,null,null,null,null,true,true,true,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"lastAttack":null},"Jordan":{"ships":[{"coords":{"x":0,"y":0},"direction":"HORIZONTAL","size":2,"occupancyArray":[true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":2},{"coords":{"x":0,"y":1},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":3},{"coords":{"x":0,"y":2},"direction":"HORIZONTAL","size":3,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":3},{"coords":{"x":0,"y":3},"direction":"HORIZONTAL","size":4,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":4},{"coords":{"x":0,"y":4},"direction":"HORIZONTAL","size":5,"occupancyArray":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"hits":3}],"attacks":[true,true,null,null,null,null,null,null,null,null,true,true,true,null,null,null,null,null,null,null,true,true,true,null,null,null,null,null,null,null,true,true,true,true,false,null,null,null,null,null,true,true,true,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,false,null,null,null,false,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"lastAttack":null}},"challengeText":"You declared war on Jordan"}`);
+console.log(almostOver);
 //battleship game area
 let gameCounter = 9954;
 const games = {
-    9950: {
-        id: 9950,
-        size: 10,
-        inviter: "Jordan",
-        invitee: "Tyler",
-        status: "ACTIVE", //is the game pending, active, or complete? It is pending when created.
-        winner: null,
-        turnIndex: "Jordan",
-        shipConfig: [2, 3, 3, 4, 5],
-        players: {
-            "Jordan": {
-                ships: ships,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            },
-            "Tyler": {
-                ships: ships,
-                attacks: (new Array(100)).fill(null),
-                lastAttack: null,
-            }
-        }
-    }
+    9954: almostOver,
+    
 };
     
 
@@ -54,7 +34,8 @@ function makeGame(gameId, inviter, invitee) {
             [invitee]: {
                 ships: null,
                 attacks: (new Array(100)).fill(null),
-                lastAttack: null,
+                //TODO: pass last attack in the game status to be used in banner
+                lastAttack: null, //||"hit and sink" || "hit" || "miss"
             }
         }
     }
@@ -80,7 +61,7 @@ function getGameSubset(gamesObj, status, user) {
 const users = [
     { username: "Tyler", password: "S", wins: 0, losses: 0 },
     { username: "Jordan", password: "S", wins: 0, losses: 0 },
-    { username: "DJratpack", password: "indahouse", wins: 2, losses: 0 },
+    { username: "DJratpack", password: "indahouse", wins: 0, losses: 0 },
     { username: "asdf", password: "a", wins: 0, losses: 0 },
     { username: "a", password: "a", wins: 0, losses: 0 },
 ];
@@ -285,8 +266,11 @@ app.get('/game_status/:game_id', authorize, (req, res) => {
     const userGame = currentGame.players[req.session.user.username];
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
     const opponentGame = currentGame.players[opponent];
+    const oppShips = currentGame.status === GameStatus.COMPLETE ? opponentGame.ships : undefined;  // send opp ships only if game status is complete
+    
 
     const returnObject = {
+        opponentShipLocations: oppShips,
         ownShipLocations: userGame.ships,
         ownHitMap: userGame.attacks,
         opponentHitMap: opponentGame.attacks,
@@ -341,6 +325,7 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
     //cleanup work
     opponentGame.attacks[attackLocation] = hit;
     currentGame.turnIndex = opponent;
+    
 
     //check for win condition and update the necessary items.
     //TODO: handle what happens to the turnIndex. Can moves still be made on a complete game? 
@@ -349,8 +334,8 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
        gameOver = true;
        currentGame.status = GameStatus.COMPLETE;
        currentGame.winner = req.session.user.username;
-       req.session.user.wins++;
-       users.find((user) => (user.username === opponent)).losses++;
+       users.find(user => user.username === req.session.user.username ).wins++;
+       users.find(user => user.username === opponent ).losses++;
        refresh = false;
     }
     //TODO: handle what happens with these three arguments on the client.
@@ -360,6 +345,7 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
 
 
     console.log(attackLocation);
+    console.log(JSON.stringify(currentGame));
     
 
 

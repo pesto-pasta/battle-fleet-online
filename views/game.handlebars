@@ -47,11 +47,15 @@
 
     theirBoard.addEventListener('clickCell', (coords) => {
         console.log("click")
-        axios.post('/game_attack/' + gameID, coords).then((result) => {
+        axios.post('/game_attack/' + gameID, coords)
+            .then((result) => {
 
         });
         refresh();
     })
 
+    setInterval(() => {
+        refresh();
+    }, 750);
 
 </script>

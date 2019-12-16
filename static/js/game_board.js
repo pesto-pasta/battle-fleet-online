@@ -29,22 +29,26 @@
             this._markers = {};
             this._makeBoard();
             this._shipPlacementEventHandlers();
+            // this._oldMarkers = new Array(100).fill(null);
         }
 
         setMarkers(markers) {
             // FIXME: this redraws the the images each time and could have the performance improved
-            this._markerContainer.innerHTML = "";
-            markers.forEach((marker, idx) => {
-                if (marker !== null) {
-                    const coords = this._indexToCoord(idx);
+            // this._markerContainer.innerHTML = "";
+
+           
+            for (let i = 0; i < markers.length; i++) {
+                if (markers[i] !== null && (!this._oldMarkers || this._oldMarkers[i] !== markers[i])) {
+                    const coords = this._indexToCoord(i);
                     const img = new Image();
-                    img.src = marker ? this._hitImgSrc : this._missImgSrc;
+                    img.src = markers[i] ? this._hitImgSrc : this._missImgSrc;
                     img.style.left = (coords.x + 1) * 50 + 'px';
                     img.style.top = (coords.y + 1) * 50 + 'px';
-                    img.classList.add('marker')
+                    img.classList.add('marker');
                     this._markerContainer.appendChild(img);
                 }
-            });
+            }
+            this._oldMarkers = markers;
         }
 
         startPlaceShip(size, variant) {
@@ -64,8 +68,8 @@
             // Make a copy of ships and return it
             return Object.values(this._ships).map((val) => val.ship);
 
-        }   
-        
+        }
+
         // Should a be a ship (or array of ships),
         // ship := {
         //      coords: { x: number, y: number },
@@ -75,7 +79,7 @@
         // }
         addShips(ships) {
             const shipsToAdd = Array.isArray(ships) ? ships : [ships];
-            
+
             for (const ship of shipsToAdd) {
 
                 // Remove the existing ship if there is already one here
@@ -85,7 +89,7 @@
 
                 this._ships[this._coordinateToKey(ship.coords)] = { ship, occupancy: this._mapToOccupancyArray(ship.coords, ship.size, ship.direction) };
             }
-            
+
             this._drawShips();
         }
 
@@ -158,7 +162,7 @@
         _coordinateToKey(coords) {
             return coords.x + '-' + coords.y;
         }
-        
+
         // Calls all of the envet listener with all of the arguments (which should be an array)
         _callEventListeners(event, args = []) {
             // Make args an array if it's not
@@ -174,13 +178,12 @@
 
             // First cehck if it's even on the board
             if ((
-                direction === GameBoard.Direction.HORIZONTAL && 
+                direction === GameBoard.Direction.HORIZONTAL &&
                 (coords.x > this._size - size || coords.x < 0 ||
-                coords.y > 0 && coords.y > this._size)
+                    coords.y > 0 && coords.y > this._size)
             ) || (direction === GameBoard.Direction.VERTICAL &&
                 (coords.x < 0 || coords.x > this._size ||
-                coords.y < 0 || coords.y > this._size - size)))
-            { return false }
+                    coords.y < 0 || coords.y > this._size - size))) { return false }
 
             const occupancyMaps = Object.values(this._ships).map((ship) => ship.occupancy)
             const newOccupancy = this._mapToOccupancyArray(coords, size, direction)
@@ -210,7 +213,7 @@
                         variant: this.placingShip.variant
                     }
                     this._callEventListeners('shipPlaced', ship);
-                    
+
                 } else { // See if a ship was clicked
                     const index = this._coordinateToIndex(coords);
                     // check if an existing ship is clicked
@@ -221,7 +224,7 @@
                 }
                 this._drawPlacingShip();
             });
-            
+
         }
 
         _coordinateToIndex(coord) {
@@ -239,8 +242,8 @@
 
             // IF there is no more placing ship, we remove the element.
             if (!this.placingShip || !this.placingShip.coords) {
-                if (this.placingShipElement) { 
-                    this._shipContainer.removeChild(this.placingShipElement) 
+                if (this.placingShipElement) {
+                    this._shipContainer.removeChild(this.placingShipElement)
                     this.placingShipElement = null;
                 }
                 return;
@@ -330,8 +333,8 @@
 
 
             this._targetElement.addEventListener('mouseover', (ev) => this._handleCellEvent('mouseOverCell', ev));
-            this._targetElement.addEventListener('mouseout', (ev) => { 
-                this._handleCellEvent('mouseOutCell', ev); 
+            this._targetElement.addEventListener('mouseout', (ev) => {
+                this._handleCellEvent('mouseOutCell', ev);
                 this._callEventListeners('mouseOutBoard');
             });
             this._targetElement.addEventListener('click', (ev) => this._handleCellEvent('clickCell', ev));

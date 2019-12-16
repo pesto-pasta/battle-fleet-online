@@ -113,7 +113,7 @@ app.set('view engine', 'handlebars');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({ secret: "87654dddkl", resave: true, saveUninitialized: true }));
-app.listen(3000, () => {
+app.listen(4000, () => {
     console.log("The server is now running");
 })
 
@@ -300,6 +300,7 @@ app.get('/game_status/:game_id', authorize, (req, res) => {
 app.post('/game_attack/:game_id', authorize, (req, res) => {
 
 
+    let refresh = true;
     const currentGame = games[req.params.game_id];
     const userGame = currentGame.players[req.session.user.username];
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
@@ -350,9 +351,10 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
        currentGame.winner = req.session.user.username;
        req.session.user.wins++;
        users.find((user) => (user.username === opponent)).losses++;
+       refresh = false;
     }
     //TODO: handle what happens with these three arguments on the client.
-    res.json({hit, sink, gameOver})
+    res.json({hit, sink, gameOver, refresh})
     
     
 

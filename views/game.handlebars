@@ -14,13 +14,17 @@
             </div>
         </div>
     </div>
+    <div id="ingame-message">
+    </div>
 </div>
+
 <script src="/js/game_board.js"></script>
 <script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
 <script>
 
     const gameID = document.getElementById("Game").dataset.gameId;
     const confirmButton = document.getElementById("confirm");
+    const inGameMessage = document.getElementById("ingame-message");
 
     const boardConfig = {
         imgSrcRoot: '/img/fleet/standard/',
@@ -36,13 +40,17 @@
             myBoard.setShips(result.data.ownShipLocations);
             myBoard.setMarkers(result.data.ownHitMap);
             theirBoard.setMarkers(result.data.opponentHitMap);
-            theirBoard.setShips(result.data.opponentShipLocations);
+            if (result.data.opponentShipLocations) {
+                theirBoard.setShips(result.data.opponentShipLocations); 
+            }
+            inGameMessage.innerHTML = result.data.inGameMessage;
+
         });
     }
 
-    
 
-    
+
+
 
     refresh();
 
@@ -51,7 +59,7 @@
         axios.post('/game_attack/' + gameID, coords)
             .then((result) => {
 
-        });
+            });
         refresh();
     })
 

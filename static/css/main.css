@@ -31,6 +31,59 @@ input:focus {
     outline: none;
 }
 
+/**********
+Nav Bar
+*************/
+
+#navigation-bar {
+    position: absolute;
+    right: 0px;
+    flex-direction: row;
+    justify-content: flex-end;
+    background-color: white;
+    border: 1px solid grey;
+    padding: 10px;
+    margin: 5px 50px 0px 0px;
+    z-index: 10;
+    text-align: right;
+
+
+}
+
+#navigation-bar ul {
+    list-style-type: none;
+
+}
+
+#navigation-bar ul li {
+
+}
+
+#navigation-bar ul li a {
+    text-decoration: none;
+    color: grey;
+
+}
+
+/***************
+Setup Page...
+****************/
+#Page-Game #confirm {
+    height: 100px;
+    width: 200px;
+    position: absolute;
+    top: 100px;
+    right: 50px;
+    font-size: 20px;
+    color: darkred;
+    background-color: white;
+    border: 3px darkred solid;
+    
+
+
+}
+
+
 
 /***************
 Accounts Page..
@@ -52,6 +105,7 @@ Accounts Page..
 #Page-Account #accountHeader {
     flex-direction: row;    
     justify-content: space-between;
+    margin-top: 20px;
 
 }
 
@@ -117,8 +171,8 @@ Accounts Page..
     justify-content: space-around;
 }
 
-#Page-Account #declareWarAgainstWho:hover {
-    
+#Page-Account #declareWarAgainstWho input:hover {
+    background-image: linear-gradient(red,orange);
 }
 
 #Page-Account #gameDataBlock {
@@ -160,20 +214,28 @@ Accounts Page..
     border-radius: 10px;
     margin: 0px 0px 15px 0px;
     padding: 5px;
+    font-size: 12px;
 
 }
 
 #Page-Account .toBattleButtonDiv {
-    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
 }
 
 
 #Page-Account .toBattleButton {
     background-color: hsl(0, 67%, 43%);
-    border-radius: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 5px;
     color: white;
+    margin-bottom: 5px;
+}
 
-
+#Page-Account .toBattleButton:hover { 
+    transform: scale(1.05);
 }
 
 
@@ -243,19 +305,30 @@ Battle Page
 
 }
 
+#Page-Game h2 {
+    color: white;
+    margin-bottom: 10px;
+    font-weight: 800;
+}
+
 #Page-Game .vessel-menu img {
     height: 40px;
 }
 
 #Page-Game .side {
-    margin: 20px;
-    padding: 10px;
+    text-align: center;
+    margin: 20px 0px 0px 200px;
+    padding: 20px;
+    background-color: rgb(211, 211, 211);
+    border-radius: 30px;
+    border: 30px rgb(200, 200, 200) solid;
+
 }
 
 #Page-Game #Game .main {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .board .ship-container {
@@ -335,13 +408,18 @@ Battle Page
     font-weight: bold;
 }
 
-#Page-Game #confirm-placements-button {
 
-}
 
 #Page-Game #confirm-placements-button input {
     background-color: darkred;
     color: white;
     height: 50px;
+
+}
+
+#Page-Game #ingame-message {
+    text-align: center;
+    color: darkred;
+    font-size: 100px;
 
 }

@@ -131,6 +131,7 @@ app.get('/account', authorize, (req, res) => {
     const activeGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.ACTIVE, req.session.user);
     const completedGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.COMPLETE, req.session.user);
 
+    //TODO: Solve scoreboard refresh bug. Symptom: Logout is required for new scores to populate. User: req.session.user (line 136) is used to pass user (and thus score) data.
     res.render('account', {
         user: req.session.user,
         users: users.map((user) => user.username).filter((username) => username !== req.session.user.username), //this variable, being sent to the client, makes a list of users that excludes the active user.
@@ -266,7 +267,14 @@ app.get('/game_status/:game_id', authorize, (req, res) => {
     const userGame = currentGame.players[req.session.user.username];
     const opponent = (req.session.user.username === currentGame.inviter) ? currentGame.invitee : currentGame.inviter;
     const opponentGame = currentGame.players[opponent];
-    const oppShips = currentGame.status === GameStatus.COMPLETE ? opponentGame.ships : undefined;  // send opp ships only if game status is complete
+    const oppShips = currentGame.status === GameStatus.COMPLETE ? opponentGame.ships : undefined;  // send oppships only if game status is complete
+    const yourTurn = (currentGame.turnIndex === req.session.user.username);
+
+    let gameMessage = "";
+    yourTurn ? gameMessage = "Your turn." : gameMessage = "Waiting on enemy...";
+    if (currentGame.status === GameStatus.COMPLETE) {
+        gameMessage = "Game over! Yay " + currentGame.winner + "!";
+    }
     
 
     const returnObject = {
@@ -275,7 +283,8 @@ app.get('/game_status/:game_id', authorize, (req, res) => {
         ownHitMap: userGame.attacks,
         opponentHitMap: opponentGame.attacks,
         gameStatus: currentGame.status,
-        yourTurn: (currentGame.turnIndex === req.session.user.username),
+        yourTurn: yourTurn,
+        inGameMessage: gameMessage,
     };
 
     res.json(returnObject);
@@ -345,7 +354,6 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
 
 
     console.log(attackLocation);
-    console.log(JSON.stringify(currentGame));
     
 
 

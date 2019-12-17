@@ -4,5 +4,7 @@ module.exports = {
         PENDING: "PENDING",
         COMPLETE: "COMPLETE",
         DENIED: "DENIED",
+        CANCELLED: "CANCELLED",
+        
     }
 }

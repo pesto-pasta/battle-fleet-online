@@ -127,17 +127,22 @@ app.post('/login', (req, res) => {
 
 app.get('/account', authorize, (req, res) => {
 
-    const pendingGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.PENDING, req.session.user);
-    const activeGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.ACTIVE, req.session.user);
-    const completedGamesArrayIncludingCurrentUser = getGameSubset(games, GameStatus.COMPLETE, req.session.user);
+    const pendingGames = getGameSubset(games, GameStatus.PENDING, req.session.user);
+    const activeGames = getGameSubset(games, GameStatus.ACTIVE, req.session.user);
+    const completedGames = getGameSubset(games, GameStatus.COMPLETE, req.session.user);
+    const deniedGames = getGameSubset(games, GameStatus.DENIED, req.session.user);
+    const cancelledGames = getGameSubset(games, GameStatus.CANCELLED, req.session.user)
+
 
     //TODO: Solve scoreboard refresh bug. Symptom: Logout is required for new scores to populate. User: req.session.user (line 136) is used to pass user (and thus score) data.
     res.render('account', {
         user: req.session.user,
         users: users.map((user) => user.username).filter((username) => username !== req.session.user.username), //this variable, being sent to the client, makes a list of users that excludes the active user.
-        pendingGames: pendingGamesArrayIncludingCurrentUser,
-        activeGames: activeGamesArrayIncludingCurrentUser,
-        completedGames: completedGamesArrayIncludingCurrentUser,
+        pendingGames: pendingGames,
+        activeGames: activeGames,
+        completedGames: completedGames,
+        cancelledGames: cancelledGames,
+        deniedGames: deniedGames,
     })
 
 });
@@ -350,14 +355,13 @@ app.post('/game_attack/:game_id', authorize, (req, res) => {
     //TODO: handle what happens with these three arguments on the client.
     res.json({hit, sink, gameOver, refresh})
     
-    
-
-
-    console.log(attackLocation);
-    
-
-
-
-
-
 })
+
+app.get('/game_deny/:game_id', authorize, (req, res) => {
+    const currentGame = games[req.params.game_id];
+    (currentGame.inviter === req.session.user.username) ? currentGame.status = GameStatus.CANCELLED : currentGame.status = GameStatus.DENIED;
+
+    res.redirect('/account')
+
+    console.log();
+})  

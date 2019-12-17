@@ -42,10 +42,10 @@ function makeGame(gameId, inviter, invitee) {
 
 }
 
-function getGameSubset(gamesObj, status, user) {
-    const keysArray = Object.keys(gamesObj);
-    const pendingArray = keysArray.filter((key) => gamesObj[key].status === status && (user.username === gamesObj[key].invitee || user.username === gamesObj[key].inviter));
-    const gameSubset = pendingArray.map(key => gamesObj[key]);
+function getGameSubset(games, status, user) {
+    const keysArray = Object.keys(games);
+    const pendingArray = keysArray.filter((key) => games[key].status === status && (user.username === games[key].invitee || user.username === games[key].inviter));
+    const gameSubset = pendingArray.map(key => games[key]);
     if (status === GameStatus.PENDING) {
         for (const game of gameSubset) {
             game.inviter === user.username ? 
@@ -127,12 +127,17 @@ app.post('/login', (req, res) => {
 
 app.get('/account', authorize, (req, res) => {
 
+
+    //third arg optional
     const pendingGames = getGameSubset(games, GameStatus.PENDING, req.session.user);
     const activeGames = getGameSubset(games, GameStatus.ACTIVE, req.session.user);
-    const completedGames = getGameSubset(games, GameStatus.COMPLETE, req.session.user);
+    const completedGames = getGameSubset(games, GameStatus.COMPLETE);
     const deniedGames = getGameSubset(games, GameStatus.DENIED, req.session.user);
     const cancelledGames = getGameSubset(games, GameStatus.CANCELLED, req.session.user)
 
+
+    const array = Object.values(games).filter((game) => game.status === GameStatus.PENDING);
+    array.forEach((game) => game.cancelText = (req.session.user.username === game.inviter) ? "Cancel Evil Plans" : "Do Not Acquiesce");
 
     //TODO: Solve scoreboard refresh bug. Symptom: Logout is required for new scores to populate. User: req.session.user (line 136) is used to pass user (and thus score) data.
     res.render('account', {
@@ -143,6 +148,7 @@ app.get('/account', authorize, (req, res) => {
         completedGames: completedGames,
         cancelledGames: cancelledGames,
         deniedGames: deniedGames,
+        logout: "Log Out",
     })
 
 });

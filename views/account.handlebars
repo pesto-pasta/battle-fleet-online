@@ -70,7 +70,7 @@
                         </div>
                         <div class="toBattleButtonDiv">
                             <a class="toBattleButton" href="/setup/{{this.id}}">To Battle</a>
-                            <a class="toBattleButton" href="/game_deny/{{this.id}}">Do Not Acquiesce</a>
+                            <a id="deny-button" class="toBattleButton" href="/game_deny/{{this.id}}">{{this.cancelText}}</a>
                         </div>
 
                     </div>
@@ -79,6 +79,50 @@
                 </div>
             </div>
         </div>
+
+       
+        <div class="gameData">
+            <h3>Denied Games</h3>
+            <div id="gameDataContainer">
+                <div class="games" id="pendingInvites">
+                    {{#each deniedGames}}
+                    <div class="game">
+                        <div>
+                            {{this.challengeText}}<br>
+                            GameId = {{this.id}}<br>
+                            Admirals = {{this.inviter}} and {{this.invitee}}<br>
+                        </div>
+                        <div class="toBattleButtonDiv">
+                        </div>
+
+                    </div>
+                    {{/each}}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="gameData">
+            <h3>Cancelled Plans</h3>
+            <div id="gameDataContainer">
+                <div class="games" id="pendingInvites">
+                    {{#each cancelledGames}}
+                    <div class="game">
+                        <div>
+                            {{this.challengeText}}<br>
+                            GameId = {{this.id}}<br>
+                            Admirals = {{this.inviter}} and {{this.invitee}}<br>
+                        </div>
+                        <div class="toBattleButtonDiv">
+                        </div>
+
+                    </div>
+                    {{/each}}
+
+                </div>
+            </div>
+        </div>
+
         <div class="gameData">
             <h3>Settled Conflicts</h3>
             <div id="gameDataContainer">
@@ -105,6 +149,8 @@
 <script>
 
     const warButton = document.getElementById("declareWarButton");
+    const denyButton = document.getElementById("deny-button");
+
 
     warButton.addEventListener('mouseover', (ev) => {
         warButton.style.backgroundImage = 'url(/img/explosion_gif2.gif)';
@@ -113,6 +159,7 @@
     warButton.addEventListener('mouseout', (ev) => {
         warButton.style.backgroundImage = '';
     })
+
 
 
 
